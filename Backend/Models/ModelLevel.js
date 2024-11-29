@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
 /***
- * @describ level : BUT / Licence / Licence Pro /  Master / Ingénierie /  Doctorat :
+ * @description level : BUT / Licence / Licence Pro /  Master / Ingénierie /  Doctorat :
  */
 
 const LevelSchema = new Schema({

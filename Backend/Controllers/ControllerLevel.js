@@ -1,14 +1,15 @@
 import { Levels }  from "../Models/ModelLevel.js";
+
 /**-------------------------------------------------------
  * @desc    Create a new Level
- * @route   POST /api/Levels
+ * @route   POST /api/Level
  * @method  POST
  * @access  Private
  ---------------------------------------------------*/
 async function createLevel(req, res) {
   try {
-    const Level = await Levels.create(req.body); // Crée un niveau avec les données du corps de la requête
-    res.status(201).json({ success: true, msg: 'Inserted successfully', data: Level });
+    const result = await Levels.create(req.body); 
+    res.status(201).json({ success: true, msg: 'Inserted successfully', data: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -17,14 +18,14 @@ async function createLevel(req, res) {
 
 /**-------------------------------------------------------
  * @desc    Get all Levels
- * @route   GET /api/Levels
+ * @route   GET /api/Level
  * @method  GET
  * @access  Public
  ---------------------------------------------------*/
 async function getAllLevels(req, res) {
   try {
-    const Levels = await Levels.find(); // Récupère tous les niveaux
-    res.status(200).json({ success: true, msg: 'Levelss fetched successfully', data: Levels });
+    const result = await Levels.find(); // Récupère tous les niveaux
+    res.status(200).json({ success: true, msg: 'Levels fetched successfully', data: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

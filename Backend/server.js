@@ -24,7 +24,10 @@ app.use(cors());
 //************************************************************************** */
 // ------------------------------------------------------------ routes ----------------------------------------------------------------------------
 import routeLevel from './Routes/RouteLevel.js';
+import routeStudyField from './Routes/RouteStudyField.js'
+
 app.use("/api/level", routeLevel);
+app.use("/api/StudyField", routeStudyField);
 
 
 //------------------------------------------------------------------------------------
