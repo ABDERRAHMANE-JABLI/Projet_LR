@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Connect-LR</title>
+  <title> Connect-LR | Search Students </title>
 
   <link rel="stylesheet" type="text/css" href="css/vendor.css">
 
@@ -56,7 +56,7 @@
           <div class="offcanvas-body">
             <ul class="navbar-nav align-items-center justify-content-end align-items-center flex-grow-1 ">
               <li class="nav-item">
-                <a class="nav-link active me-md-4" href="#billboard">Home</a>
+                <a class="nav-link active me-md-4" href="#search">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link me-md-4" href="#residence">Evenments</a>
@@ -279,35 +279,27 @@
     </nav>
   </header>
 
-  <!-- billboard start  -->
-  <section id="billboard">
+  <!-- search start  -->
+  <section id="search">
     <div class="container mt-5">
       <div class="row flex-lg-row-reverse align-items-center mt-5">
 
-        <div class="col-lg-6">
-          <img src="images/etudiants.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700"
-            height="500" loading="lazy">
-        </div>
-
-        <div class="col-lg-6">
-          <h1 class=" text-capitalize  lh-1 my-3">chaque étudiant mérite un guide dans son parcours</h1>
+        <div class="col-lg-12">
+          <h1 class="text-capitalize mt-5">chaque étudiant mérite un guide dans son parcours</h1>
           <p class="lead">Recherchez, échangez, connectez : Transformez vos doutes en certitudes. Découvrez les parcours des anciens élèves et prenez des décisions éclairées pour votre avenir.</p>
-          <nav class="navbar navbar-expand-lg billboard-nav">
-            <div class="container billboard-search p-0">
-
-              <div class="row billboard-row">
-                <div class="col-lg-3 billboard-select">
-                  <select class="form-select mb-2 mb-lg-0" aria-label="Purpose">
+          <nav class="navbar navbar-expand-lg search-nav">
+            <div class="container d-flex flex-row justify-content-between">
+                <div class="search-select">
+                  <select class="search-input" aria-label="Purpose">
                     <option selected>Domaine</option>
                     <option value="1">Buy</option>
                     <option value="2">Rent</option>
                     <option value="3">Sell</option>
                     <option value="4">Something else here</option>
-
                   </select>
                 </div>
-                <div class="col-lg-3 billboard-select">
-                  <select class="form-select mb-2 mb-lg-0" aria-label="Location">
+                <div class="search-select">
+                  <select class="search-input" aria-label="Location">
                     <option selected>Niveau</option>
                     <option value="1">Texas</option>
                     <option value="2">Miami</option>
@@ -316,8 +308,8 @@
                     <option value="5">Something else here</option>
                   </select>
                 </div>
-                <div class="col-lg-3 billboard-select">
-                  <select class="form-select mb-2 mb-lg-0" aria-label="Type">
+                <div class="search-select">
+                  <select class="search-input" aria-label="Type">
                     <option selected>Promotions</option>
                     <option value="1">House</option>
                     <option value="2">Appartment</option>
@@ -328,11 +320,9 @@
                   </select>
                 </div>
 
-                <div class="col-lg-3 billboard-btn">
-                  <button type="submit" class="btn btn-primary btn-lg billboard-search">Search</button>
+                <div class="search-btn">
+                  <button type="submit" class="btn btn-primary btn-lg">Recherchez</button>
                 </div>
-              </div>
-
 
             </div>
           </nav>
@@ -345,189 +335,89 @@
   <section id="feature">
     <div class="container py-5">
       <div class="row">
-        <div class="section-header align-center mb-5">
-          <h2 class=" text-capitalize m-0">Nos Partenaires</h2>
+        <div class="section-header align-center">
+          <h2 class=" text-capitalize mt-5">Nos Diplômés</h2>
         </div>
       </div>
-      <div class="row d-flex justify-content-between">
-        <div class="col-md-2 ">
-          <div class="my-3" role="group" aria-label="3 / 7" style="width: 158.667px; margin-right: 20px;"><img
-              alt="image" src="images/c3.png"></div>
+      <div class="container mt-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <div class="col">
+                <div class="card h-100 text-center">
+                    <img src="images/team1.jpg" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Thomas Bernard</h5>
+                        <p class="card-subtitle text-muted">Promotion 2022</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a href="#" class="me-2"><i class="bi bi-person"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-chat"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-envelope"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 text-center">
+                    <img src="images/team4.jpg" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Sarah Johnson</h5>
+                        <p class="card-subtitle text-muted">Promotion 2023</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a href="#" class="me-2"><i class="bi bi-person"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-chat"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-envelope"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 text-center">
+                    <img src="images/team5.jpg" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Michael Smith</h5>
+                        <p class="card-subtitle text-muted">Promotion 2024</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a href="#" class="me-2"><i class="bi bi-person"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-chat"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-envelope"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 text-center">
+                    <img src="images/team3.jpg" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Emily Davis</h5>
+                        <p class="card-subtitle text-muted">Promotion 2025</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a href="#" class="me-2"><i class="bi bi-person"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-chat"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-envelope"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 text-center">
+                    <img src="images/team6.jpg" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Emily Davis</h5>
+                        <p class="card-subtitle text-muted">Promotion 2025</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a href="#" class="me-2"><i class="bi bi-person"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-chat"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-envelope"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-2">
-          <div class="my-3" role="group" aria-label="3 / 7" style="width: 158.667px; margin-right: 20px;"><img
-              alt="image" src="images/c1.png"></div>
-        </div>
-        <div class="col-md-2">
-          <div class="my-3" role="group" aria-label="3 / 7" style="width: 158.667px; margin-right: 20px;"><img
-              alt="image" src="images/c4.png"></div>
-        </div>
-        <div class="col-md-2">
-          <div class="my-3" role="group" aria-label="3 / 7" style="width: 158.667px; margin-right: 20px;"><img
-              alt="image" src="images/c2.png"></div>
-        </div>
-        <div class="col-md-2">
-          <div class="my-3" role="group" aria-label="3 / 7" style="width: 158.667px; margin-right: 20px;"><img
-              alt="image" src="images/c5.png"></div>
-        </div>
-
-
-      </div>
     </div>
-  </section>
-
-  <!-- Residence start  -->
-  <section id="residence">
-    <div class="container  my-5 py-5">
-      <h2 class="text-capitalize m-0 py-lg-5">Evénements à Venir</h2>
-
-      <div class="swiper-button-next residence-swiper-next  residence-arrow"></div>
-      <div class="swiper-button-prev residence-swiper-prev residence-arrow"></div>
-
-      <div class="swiper residence-swiper">
-        <div class="swiper-wrapper">
-
-          <div class="swiper-slide">
-            <div class="card">
-              <a href="index.html"><img src="images/1.png" class="card-img-top" alt="image"></a>
-              <div class="card-body p-0">
-                <a href="index.html">
-                  <h5 class="card-title pt-4">Comment Créer ton CV</h5>
-                </a>
-                <p class="card-text">Par Abdell JABLI</p>
-
-                <div class="card-text">
-                  <ul class="d-flex">
-                    <li class="residence-list"> <img src="images/position.png" alt="image"> à Distance</li>
-                    <li class="residence-list"> <img src="images/calender.png" alt="image"> 20-12-2024</li>
-                  </ul>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="card">
-              <a href="index.html"><img src="images/2.png" class="card-img-top" alt="image"></a>
-              <div class="card-body p-0">
-                <a href="index.html">
-                  <h5 class="card-title pt-4">Ton Réseau Linkedin</h5>
-                </a>
-                <p class="card-text">Par Mahammat Hassan</p>
-
-                <div class="card-text">
-                  <ul class="d-flex">
-                    <li class="residence-list"> <img src="images/position.png" alt="image"> Pas-000 LR</li>
-                    <li class="residence-list"> <img src="images/calender.png" alt="image"> 18-12-2024</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="card">
-              <a href="index.html"><img src="images/3.png" class="card-img-top" alt="image"></a>
-              <div class="card-body p-0">
-                <a href="index.html">
-                  <h5 class="card-title pt-4">Prise de Parole En Public</h5>
-                </a>
-                <p class="card-text">James Rambauch</p>
-
-                <div class="card-text">
-                  <ul class="d-flex">
-                    <li class="residence-list"> <img src="images/position.png" alt="image"> à Distance</li>
-                    <li class="residence-list"> <img src="images/calender.png" alt="image"> 23-12-2024</li>
-                  </ul>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <div class="swiper-slide">
-            <div class="card">
-              <a href="index.html"><img src="images/4.png" class="card-img-top" alt="image"></a>
-              <div class="card-body p-0">
-                <a href="index.html">
-                  <h5 class="card-title pt-4">Préparation Entretien D'embauche</h5>
-                </a>
-                <p class="card-text">Malika Lisa</p>
-
-                <div class="card-text">
-                  <ul class="d-flex flex-row justify-content-between">
-                    <li class="residence-list"> <img src="images/position.png" alt="image"> 01-01-2025</li>
-                    <li class="residence-list"> <img src="images/calender.png" alt="image"> à Distance</li>
-                  </ul>
-                </div>
-
-              </div>
-            </div>
-          </div>
-         
-        </div>
-
-
-
-
-      </div>
-
-      <div class="residence-btn">
-        <a href="index.html" class="btn btn-primary btn-lg my-5">Tous les Evénments</a>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- Testimonial start  -->
-  <section id="testimonial">
-    <div class="container my-5">
-
-
-
-      <div class="swiper testimonial-swiper">
-        <div class="swiper-wrapper">
-
-          <div class="swiper-slide">
-            <div class="row my-5 py-lg-5">
-              <div class="col-md-8 mx-auto">
-                <img src="images/qucote.png" class="rounded mx-auto d-inline" alt="...">
-                <p class="testimonial-p mt-4">j'ai pu discuter avec un ancien étudiant de mon programme. Ses conseils m'ont aidée à choisir un stage qui correspond parfaitement à mes aspirations professionnelles.</p>
-
-                <div class="row">
-                  <div class="col-md-8">
-                    <p class="pt-5 mb-1">Lisa Joe</p>
-                    <p class="">Etudiante, L2</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="swiper-slide">
-            <div class="row my-5 py-lg-5">
-              <div class="col-md-8 mx-auto">
-                <img src="images/qucote.png" class="rounded mx-auto d-inline" alt="...">
-                <p class="testimonial-p mt-4">Partager mon expérience sur cette plateforme m'a permis de guider des étudiants et de leur éviter les erreurs que j'avais commises. C'est gratifiant de pouvoir redonner à la communauté.</p>
-
-                <div class="row">
-                  <div class="col-md-8">
-                    <p class="pt-5 mb-1">Abdell JABLI</p>
-                    <p class="">Ancien Etudiant</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class=" testimonial-swiper-button col-md-3 position-absolute">
-          <div class="swiper-button-prev testimonial-arrow"></div>
-          <div class="arrow-divider"> | </div>
-          <div class="swiper-button-next testimonial-arrow"></div>
-        </div>
-
-      </div>
     </div>
   </section>
 
@@ -542,7 +432,7 @@
           <div class="text-content ps-md-5 mt-4 mt-md-0">
             <p class="py-lg-2">Connect-LR est une plateforme collaborative conçue pour offrir aux étudiants un accès direct aux retours d'expérience des anciens élèves, 
               les aider à valider leurs choix d'études et à bâtir un avenir professionnel éclairé</p>
-            <a href="index.html" class="btn btn-primary btn-lg px-4 me-md-2">Se Connecter</a>
+            <a href="#" class="btn btn-primary btn-lg px-4 me-md-2">Établir de nouveaux liens</a>
           </div>
         </div>
       </div>
