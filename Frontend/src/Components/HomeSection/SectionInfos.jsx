@@ -1,6 +1,6 @@
 import React from "react";
 
-const SectionInfos = () => {
+const SectionInfos = ({text}) => {
   return (
     <section id="start">
       <div className="container my-5 py-5">
@@ -19,7 +19,7 @@ const SectionInfos = () => {
                 bâtir un avenir professionnel éclairé
               </p>
               <a href="/index" className="btn btn-primary btn-lg px-4 me-md-2">
-                Se Connecter
+                {text}
               </a>
             </div>
           </div>

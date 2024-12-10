@@ -5,7 +5,7 @@ const Navbar = () => {
     <header id="nav" className="site-header position-fixed text-white bg-dark">
   <nav id="navbar-example2" className="navbar navbar-expand-lg py-2">
     <div className="container">
-      <a className="navbar-brand" href="./index.html">
+      <a className="navbar-brand" href="/">
         <img src={logo} alt="logo" />
       </a>
       <button

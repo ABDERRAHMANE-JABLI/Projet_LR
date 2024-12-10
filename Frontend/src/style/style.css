@@ -266,7 +266,11 @@ button.btn.btn-primary.btn-lg.billboard-search {
   border: 5px solid white;
   width: 100%;
 }
-
+a.btn.btn-primary.btn-lg.billboard-search {
+  padding: 24px;
+  border: 5px solid white;
+  width: 100%;
+}
 #billboard {
   margin-top: 100px;
   margin-bottom: 80px;
@@ -374,41 +378,24 @@ button.btn.btn-primary.btn-lg.my-lg-5 {
   padding: 22px 42px;
 }
 
-
-
-/*---- testimonial section start ---- */
-p.testimonial-p {
-  font-size: 25px;
-  color: var(--body-text-color);
+/* Style des points inactifs */
+.swiper-pagination-bullet {
+  background-color: #b0adad !important; /* Gris clair pour plus de visibilité */
+  opacity: 0.7; /* Légère transparence */
+  width: 12px; /* Taille des points */
+  height: 12px;
+  margin: 0 6px; /* Espacement entre les points */
 }
 
-.testimonial-swiper-button {
-  bottom: 135px;
-  right: 213px;
-  width: 120px;
+/* Style du point actif */
+.swiper-pagination-bullet-active {
+  background-color: #007bff !important; /* Bleu vif pour le point actif */
+  opacity: 1; /* Point actif entièrement visible */
+  width: 14px; /* Taille légèrement agrandie */
+  height: 14px;
+  transition: all 0.3s ease-in-out; /* Animation douce */
 }
 
-.swiper-button-prev.testimonial-arrow,
-.swiper-button-next.testimonial-arrow {
-  color: #FFFFFF;
-  --swiper-navigation-size: 30px;
-  font-weight: bold;
-}
-
-.arrow-divider {
-  font-size: 30px;
-  color: var(--grey-color);
-  padding-left: 56px;
-  padding-bottom: 6px;
-}
-
-@media only screen and (max-width: 900px) {
-  p.testimonial-p {
-    font-size: 25px;
-    color: var(--body-text-color);
-  }
-
-}
 
 
 /*---- footer section start ----  */

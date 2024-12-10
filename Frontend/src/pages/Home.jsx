@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Partner, Event, TestImoniale, Footer } from "../Components/Components";
+import { Navbar, Partner, Event, TestImoniale, SectionInfos, Footer } from "../Components/Components";
 import bg from "../images/etudiants.png";
 const Home = () => {
   return (
@@ -71,12 +71,11 @@ const Home = () => {
                       </select>
                     </div>
                     <div className="col-lg-3 billboard-btn">
-                      <button
-                        type="submit"
+                      <a href="/search"
                         className="btn btn-primary btn-lg billboard-search"
                       >
                         Search
-                      </button>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -91,6 +90,8 @@ const Home = () => {
       <Event/>
 
       <TestImoniale/>
+
+      <SectionInfos text="Se Connecter"/>
 
       <Footer/>
       
