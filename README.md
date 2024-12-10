@@ -28,6 +28,22 @@ npm run serve
 
 - You can access the backend server at `http://localhost:8000`.
   
+  
+### Frontend
+
+To set up the frontend:
+
+1. Open a new terminal and navigate to the `frontend` folder:
+cd frontend
+
+2. Install the required dependencies:
+npm install
+
+3. Start the frontend development server:
+npm run start
+
+- You can access the frontend application at `http://localhost:3000`.
+
 
 ### Requirements 
 

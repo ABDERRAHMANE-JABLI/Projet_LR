@@ -1,0 +1,72 @@
+/* Section principale */
+.testimonial-section {
+    background-color: #121B25; /* Fond sombre */
+    color: #ffffff;
+    padding: 50px 0;
+    text-align: center;
+    position: relative;
+  }
+  
+  /* Slide */
+  .testimonial-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    position: relative;
+  }
+  
+  /* Texte */
+  .testimonial-text {
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto 20px;
+    margin-top: 20px;
+    color: #e4e6eb;
+  }
+  
+  .author-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .author-position {
+    font-size: 16px;
+    color: #9ca3af;
+  }
+  
+  /* Flèches de navigation */
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: #007bff; /* Couleur des flèches */
+    width: 40px;
+    height: 40px;
+  }
+  
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 30px;
+  }
+  
+  .swiper-button-prev {
+    left: 20px;
+  }
+  
+  .swiper-button-next {
+    right: 20px;
+  }
+  
+  /* Barre de séparation */
+  .swiper-pagination {
+    position: absolute;
+    bottom: 20px;
+  }
+  
+  .divider {
+    font-size: 24px;
+    color: #555;
+    margin: 0 15px;
+  }
+  
