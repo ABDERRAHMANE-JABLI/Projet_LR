@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
+import jwt from 'jsonwebtoken';
 
 /***
  * @description Student or Admin

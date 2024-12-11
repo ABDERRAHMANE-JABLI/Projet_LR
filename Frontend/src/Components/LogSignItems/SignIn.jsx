@@ -1,6 +1,8 @@
 import {Button} from "./components.js"
 import { useState } from "react"
 import {toast} from 'react-toastify'
+import axios from "axios"
+import Swal from "sweetalert2"
 
 const Signin = () => {
 
@@ -11,17 +13,69 @@ const Signin = () => {
   const [password_repeat, setpassword_repeat] = useState("");
   const [error, setError] = useState(false);
 
-  const formRegister = (e) => {
+  const formRegister = async (e) => {
     e.preventDefault();
+  
     if (firstname.trim() === "") return toast.error("Le Nom est Obligatoire");
     if (lastname.trim() === "") return toast.error("Le Prénom est Obligatoire");
     if (email.trim() === "") return toast.error("L'Email est Obligatoire");
-    if (password.trim() === "") return toast.error("Le Mot de Pass est Obligatoire");
+    if (password.trim() === "") return toast.error("Le Mot de Passe est Obligatoire");
     if (password.trim() !== password_repeat.trim()) {
-        setError(true); // Set the error state to true if passwords don't match
-        return;
+      setError(true);
+      return toast.error("Les mots de passe ne correspondent pas");
+    }
+  
+    try {
+      // Appel à l'API
+      const response = await axios.post("http://127.0.0.1:8000/api/auth/registre", {
+        firstname,
+        lastname,
+        email,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json", // Préciser que les données sont au format JSON
+        },
+      });
+  
+      // Récupération du message de l'API
+      const { message } = response.data;
+  
+      // Afficher le message dans SweetAlert2
+      Swal.fire({
+        title: "Succès !",
+        text: message,
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+  
+      // Réinitialiser le formulaire après succès
+      setFirstname("");
+      setlastname("");
+      setEmailregistre("");
+      setPassregistre("");
+  
+    } catch (error) {
+        console.log(error)
+      if (error.response) {
+        Swal.fire({
+          title: "Erreur",
+          text: error.response.data.message || "Une erreur s'est produite",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        Swal.fire({
+          title: "Erreur",
+          text: "Impossible de se connecter au serveur.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
+    }
   };
+  
 
 
   return (

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navbar, Footer, SectionInfos } from "../Components/Components";
 import { useParams } from 'react-router-dom';
 
@@ -44,6 +45,16 @@ const students = [
 ]
 
 const Search = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const user = localStorage.getItem("user");
+
+        if (!user) {
+            // Rediriger vers la page principale si user n'existe pas
+            navigate("/");
+        }
+    }, [navigate]);
+
     const currentYear = new Date().getFullYear(); // Année actuelle
     const lastFiveYears = Array.from({ length: 5 }, (_, i) => currentYear - i); // 5 dernières années
     const { domaine, grade, year } = useParams();

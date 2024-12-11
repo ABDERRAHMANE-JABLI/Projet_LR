@@ -10,6 +10,6 @@ router.post('/registre', authUser.registerStudent);
 router.post('/login', authUser.LoginUser);
 
 // /api/auth/verify/:userId/:token
-router.get("/verify/:userId/:token", authUser.verifyUserAccountCtrl);
+router.get("/verifyAccount/:userId/:token", authUser.verifyUserAccountCtrl);
 
 export default router;

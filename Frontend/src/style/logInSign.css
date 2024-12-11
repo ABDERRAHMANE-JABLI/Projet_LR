@@ -4,6 +4,11 @@
     background-color: white !important;
 }
 
+.nav-pills .active{
+    background-color: #106eb1 !important;
+    color: white !important;
+}
+
 .bg-sigin-image{
     background-image: url('../images/signin.gif');
     background-position: center;

@@ -38,7 +38,7 @@ async function registerStudent (req, res) {
 
    await verifyToken.save();
    // Le lien${process.env.DOMAIN}
-   const link = `http://localhost:3000/students/${new_user._id}/verify/${verifyToken.token}`;
+   const link = `http://localhost:3000/verifyAccount/${new_user._id}/${verifyToken.token}`;
    // Putting the link into an html template
    const htmlTemplate = `<!DOCTYPE html>
    <html lang="en">
@@ -109,7 +109,7 @@ async function registerStudent (req, res) {
 
 /**-----------------------------------------------
  * @desc    Verify User Account
- * @route   /api/auth/verify/:userId/:token
+ * @route   /api/auth/verifyAccount/:userId/:token
  * @method  GET
  * @access  public
  ------------------------------------------------*/
