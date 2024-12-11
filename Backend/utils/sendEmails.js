@@ -1,6 +1,6 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer"
 
-module.exports = async (userEmail, subject, htmlTemplate) => {
+async function sendMail(userEmail, subject, htmlTemplate){
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -11,7 +11,7 @@ module.exports = async (userEmail, subject, htmlTemplate) => {
     });
 
     const mailOptions = {
-      from: process.env.APP_EMAIL,
+      from: `Connect-LR <${process.env.APP_EMAIL}>`,
       to: userEmail,
       subject: subject,
       html: htmlTemplate,
@@ -23,4 +23,6 @@ module.exports = async (userEmail, subject, htmlTemplate) => {
     console.log(error);
     throw new Error("Internal Server Error (nodemailer)");
   }
-};
+}
+
+export default sendMail

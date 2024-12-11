@@ -4,6 +4,8 @@ const { Schema, model } = mongoose;
 /***
  * @description Student or Admin
  */
+import dotenv from "dotenv";
+dotenv.config()
 
 const UserSchema = new Schema({
     firstname:{
@@ -39,6 +41,10 @@ const UserSchema = new Schema({
         type : String,
         required: true
     },
+    statut :{
+        // etudiant / stagiaire / salarié.
+        type : String,
+    },
     isVerified :{
         type:Boolean,
         default: false,
@@ -49,7 +55,9 @@ const UserSchema = new Schema({
     }
 );
 
+
+UserSchema.methods.generateAuthToken = function(){
+    return jwt.sign({id:this._id, role:this.role}, process.env.JWT_secret)
+}
+
 export const Users = model("Users", UserSchema);
-
-
-

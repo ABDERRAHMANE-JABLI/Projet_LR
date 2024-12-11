@@ -27,11 +27,13 @@ import routeLevel from './Routes/RouteLevel.js';
 import routeStudyField from './Routes/RouteStudyField.js'
 import routeStudentLevel from './Routes/RouteStudentLevel.js'
 import routeUser from './Routes/RouteUser.js'
+import routeAuthentification from './Routes/RouteAuth.js'
 
 app.use("/api/level", routeLevel);
 app.use("/api/StudyField", routeStudyField);
 app.use("/api/Users", routeUser);
 app.use("/api/StudentLevel", routeStudentLevel);
+app.use("/api/auth", routeAuthentification);
 
 
 //------------------------------------------------------------------------------------

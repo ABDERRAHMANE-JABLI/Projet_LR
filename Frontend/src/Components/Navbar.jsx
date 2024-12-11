@@ -39,7 +39,7 @@ const Navbar = () => {
               <a className="nav-link active me-md-4" href="#billboard">Acceuil</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link me-md-4" href="#residence">Evénments</a>
+              <a className="nav-link me-md-4" href="#residence">Evénements</a>
             </li>
             <li className="nav-item">
               <a className="nav-link me-md-4" href="#help">Recherche</a>
@@ -47,9 +47,7 @@ const Navbar = () => {
             <li className="nav-item">
               <a
                 className="nav-link mx-md-4"
-                href="/"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                href="/Auth"
               >
                 Login
               </a>

@@ -1,0 +1,20 @@
+.div-login{
+    width: 100vw;
+    height: 100vh;
+    background-color: white !important;
+}
+
+.bg-sigin-image{
+    background-image: url('../images/signin.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size:contain;
+  }
+  
+  .bg-login-image{
+    background-image: url('../images/login.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size:contain;
+  }
+
