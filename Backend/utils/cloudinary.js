@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary');
+import cloudinary from 'cloudinary';
 
 cloudinary.config({
     cloud_name : process.env.CLOUDINARY_NAME,
@@ -6,8 +6,7 @@ cloudinary.config({
     api_secret : process.env.CLOUDINARY_SECRET
 });
 
-
-const cloudinaryUploadImage = async(file) =>{
+export async function cloudinaryUploadImage(file){
     try {
         const data = await cloudinary.uploader.upload(file,{
             resource_type : 'auto',
@@ -18,16 +17,11 @@ const cloudinaryUploadImage = async(file) =>{
     }
 }
 
-const cloudinaryRemoveImage = async(file) =>{
+export async function cloudinaryRemoveImage(file){
     try {
         const result = await cloudinary.uploader.destroy(file);
         return result;
     } catch (error) {
         console.log(error);
     }
-}
-
-module.exports = {
-    cloudinaryUploadImage,
-    cloudinaryRemoveImage,
 }

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import logo from "../images/logo_app.png";
+import { useNavigate } from "react-router-dom"; // Assurez-vous d'utiliser React Router
+
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
-
+  const navigate = useNavigate();
   // Vérifie localStorage pour un utilisateur existant
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -11,6 +13,12 @@ const Navbar = () => {
       setUser(JSON.parse(storedUser)); // Stocke l'utilisateur dans le state
     }
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // Supprimer l'utilisateur du localStorage
+    setUser(null); // Réinitialiser l'état utilisateur
+    navigate("/Auth"); // Rediriger vers la page de connexion
+  };
 
   return (
     <header id="nav" className="site-header position-fixed text-white bg-dark">
@@ -47,7 +55,7 @@ const Navbar = () => {
             <div className="offcanvas-body">
               <ul className="navbar-nav align-items-center justify-content-end align-items-center flex-grow-1">
                 <li className="nav-item">
-                  <a className="nav-link active me-md-4" href="#billboard">Accueil</a>
+                  <a className="nav-link active me-md-4" href="/">Accueil</a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link me-md-4" href="#residence">Evénements</a>
@@ -57,24 +65,34 @@ const Navbar = () => {
                 </li>
 
                 {/* Login ou Profil Dynamique */}
-                <li className="nav-item">
                   {user ? (
                     // Si l'utilisateur est connecté, afficher l'icône profil
-                    <a className="nav-link mx-md-4" href={`/profile/${user._id}`}>
+                    <li className="nav-item dropdown ">
+                    <a className="nav-link me-md-4 text-center dropdown-toggle" data-bs-toggle="dropdown" href="#p" role="button"
+                  aria-expanded="false">
                       <img
                         src={user.photo?.url}
                         alt="profile"
                         className="profile-image"
                         title={`${user.firstname} ${user.lastname}`}
+                        id="img_prf"
                       />
                     </a>
+                    <ul className="dropdown-menu dropdown-menu-dark">
+                      <li><a href={`/profile/${user._id}`} className="dropdown-item">Mon Profile</a>
+                      </li>
+                      <li><button className="dropdown-item" onClick={handleLogout}>
+                            Se Déconnecter
+                          </button>
+                      </li>
+                    </ul>
+                  </li>
                   ) : (
                     // Sinon, afficher "Login"
                     <a className="nav-link mx-md-4" href="/Auth">
                       Login
                     </a>
                   )}
-                </li>
               </ul>
             </div>
           </div>
