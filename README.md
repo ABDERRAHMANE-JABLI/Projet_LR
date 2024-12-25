@@ -5,7 +5,7 @@ Connect-LR is an innovative web platform aimed at strengthening the bonds betwee
 ## Developed by :
 
 - Abderrahmane JABLI
-- Mahmoud Hassan Mahamat
+- Mahamoud Hassan Mahamat
 
 ## Project Structure
 
