@@ -18,6 +18,11 @@ const Home = () => {
   // Fonction appelée lors du clic sur le bouton de recherche
   const handleSearch = (e) => {
     e.preventDefault();
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      alert('Veuillez se connecter pour pouvoir utiliser ce service');
+      return;
+    }
     if (domaine && grade && year) {
       navigate(`/search/${domaine}/${grade}/${year}`); // Redirection avec les paramètres
     } else {

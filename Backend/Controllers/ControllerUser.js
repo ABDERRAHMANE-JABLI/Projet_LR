@@ -1,5 +1,11 @@
 import { Users } from "../Models/ModelUser.js";
 import { StudentLevels } from "../Models/ModelStudentLevel.js";
+import { cloudinaryRemoveImage, cloudinaryUploadImage } from "../utils/cloudinary.js"
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+import bcrypt from 'bcryptjs';
+
 
 /**-------------------------------------------------------
  * @desc    Create a new User (Student or Admin)
@@ -7,30 +13,62 @@ import { StudentLevels } from "../Models/ModelStudentLevel.js";
  * @method  POST
  * @access  Private (Admin only)
  ---------------------------------------------------*/
+ 
 async function createUser(req, res) {
-  try {
+    let user = await Users.findOne({email: req.body.email});
+    if(user){
+       return res.status(400).json({success:false, msg : "Compte déja existe dans la base de donnée"});
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(req.body.password, salt);
+    // Remplacer le mot de passe en clair par le mot de passe hashé
+    req.body.password = hashedPass;
     const result = await Users.create(req.body);
     res.status(201).json({ success: true, msg: 'User created successfully', data: result });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
 }
 
 
 /**-------------------------------------------------------
- * @desc    Get all Students
- * @route   GET /api/user/students
+ * @desc    Get all Students with Pagination
+ * @route   GET /api/user/students?page=1
  * @method  GET
  * @access  Private (Admin only)
  ---------------------------------------------------*/
-async function getStudents(req, res) {
+ async function getStudents(req, res) {
   try {
-    const result = await Users.find({ role: 'Student' }); // Retrieve all users with role 'Student'
-    res.status(200).json({ success: true, msg: 'Students fetched successfully', data: result });
+    // Paramètres de pagination
+    const page = parseInt(req.query.page) || 1; // Page actuelle (par défaut : 1)
+    const limit = 10; // Nombre d'étudiants par page
+    const skip = (page - 1) * limit; // Nombre de documents à ignorer
+
+    // Récupérer les étudiants avec pagination
+    const students = await Users.find({ role: 'etudiant' })
+      .skip(skip) // Ignorer les premiers 'skip' documents
+      .limit(limit) // Limiter à 'limit' documents
+      .exec();
+
+    // Compter le total d'étudiants pour calculer les pages disponibles
+    const totalStudents = await Users.countDocuments({ role: 'etudiant' });
+    const totalPages = Math.ceil(totalStudents / limit);
+
+    // Répondre avec les étudiants paginés et les métadonnées de pagination
+    res.status(200).json({
+      success: true,
+      msg: 'Students fetched successfully',
+      data: students,
+      pagination: {
+        totalStudents,
+        totalPages,
+        currentPage: page,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
+
 
 /**-------------------------------------------------------
  * @desc    Get Students by Level, Year, and Study Field
@@ -90,6 +128,47 @@ async function updateUser(req, res) {
 }
 
 /**-------------------------------------------------------
+ * @desc    Update a User by ID
+ * @route   PUT /api/user/:id/status
+ * @method  PUT
+ * @access  Private (Admin or User)
+ ---------------------------------------------------*/
+const updateUserStatus = async (req, res) => {
+  try {
+    const { statut } = req.body; // Extraire le statut depuis le corps de la requête
+    
+    // Vérification que le champ `status` est fourni
+    if (typeof statut === "undefined") {
+      return res.status(400).json({ success: false, msg: "Status is required" });
+    }
+
+    // Mettre à jour uniquement le champ `status` de l'utilisateur
+    const user = await Users.findByIdAndUpdate(
+      req.params.id, // ID de l'utilisateur à mettre à jour
+      { statut }, // Champ à mettre à jour
+      { new: true } // Retourne le document mis à jour
+    );
+
+    // Vérifier si l'utilisateur existe
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found" });
+    }
+
+    // Réponse réussie
+    res.status(200).json({
+      success: true,
+      msg: "User status updated successfully",
+      data: statut,
+    });
+  } catch (error) {
+    // Gérer les erreurs
+    console.error("Maj statut :", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
+/**-------------------------------------------------------
  * @desc    Delete a User by ID
  * @route   DELETE /api/user/:id
  * @method  DELETE
@@ -105,13 +184,58 @@ async function deleteUser(req, res) {
   }
 }
 
+
+// Pour obtenir __dirname dans les modules ES6
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function userUploadPhoto(req, res) {
+    if (!req.file) {
+        return res.status(400).json({ message: "No file provided" });
+    }
+
+    // Obtenir le chemin de l'image :
+    const imgPath = path.join(__dirname, `../images/${req.file.filename}`);
+
+    try {
+        // Upload image to Cloudinary :
+        const result = await cloudinaryUploadImage(imgPath);
+
+        // Obtenir l'utilisateur qui souhaite modifier sa photo :
+        const user = await Users.findById(req.params.id);
+        if (user.photo.publicId !== null) {
+            await cloudinaryRemoveImage(user.photo.publicId);
+        }
+
+        // Mettre à jour la photo de l'utilisateur
+        user.photo = { url: result.secure_url, publicId: result.public_id };
+        await user.save();
+
+        res.status(200).json({
+            message: "Profile photo uploaded successfully",
+            photo: { url: result.secure_url, publicId: result.public_id },
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "An error occurred", error: error.message });
+    } finally {
+        // Supprimer la photo du dossier local
+        if (fs.existsSync(imgPath)) {
+            fs.unlinkSync(imgPath);
+        }
+    }
+}
+
+
 export default {
   createUser,
   getStudentsByCriteria,
   getStudents,
   getUserById,
   updateUser,
-  deleteUser
+  updateUserStatus,
+  deleteUser,
+  userUploadPhoto
 };
 
 

@@ -25,13 +25,13 @@ const Login = () => {
         password: password,
       });
 
-      const { _id, firstname, lastname, photo, role, token } = response.data;
+      const { _id, firstname, lastname, photo, role, statut, token } = response.data;
 
       // Stocker les données dans localStorage
       localStorage.setItem("token", token);
       localStorage.setItem(
         "user",
-        JSON.stringify({ _id, firstname, lastname, photo, role })
+        JSON.stringify({ _id, firstname, lastname, photo, role, statut })
       );
 
       console.log("Connexion réussie !");

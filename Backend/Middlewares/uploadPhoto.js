@@ -1,35 +1,37 @@
-const path = require("path");
+import path from "path";
+import { fileURLToPath } from "url";
 
-const multer = require("multer");
+// Pour obtenir __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-//emplacement des photo : 
+import multer from "multer";
+
+// Emplacement des photos
 const photoStorage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, path.join(__dirname,"../images"));
+    destination: function(req, file, cb) {
+        cb(null, path.join(__dirname, "../images"));
     },
-    filename: function(req, file, cb){
-        if(file){
-            cb(null, new Date().toISOString().replace(/:/g,"-")+ file.originalname);
-        }
-        else{
-            cb(null, false);//false aucun nom pour image
+    filename: function(req, file, cb) {
+        if (file) {
+            cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
+        } else {
+            cb(null, false); // Pas de nom pour l'image
         }
     }
 });
 
-
-//middleware photo upload :
+// Middleware photo upload :
 const photoUpload = multer({
     storage: photoStorage,
-    fileFilter: function(req, file, cb){
-        if(file.mimetype.startsWith("image")){
+    fileFilter: function(req, file, cb) {
+        if (file.mimetype.startsWith("image")) {
             cb(null, true);
-        }
-        else{
-            cb({message : "unsupported MIME Type"},false);
+        } else {
+            cb({ message: "unsupported MIME Type" }, false);
         }
     },
-    limits: {fileSize: 1024 * 1024 * 5}
+    limits: { fileSize: 1024 * 1024 * 5 }
 });
 
-module.exports = photoUpload;
+export default photoUpload;
