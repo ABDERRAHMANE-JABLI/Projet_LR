@@ -38,13 +38,14 @@ const UserSchema = new Schema({
         type : String,
         required : true
     },
-    role:{ // student or admin
+    role:{ // Etudiant or Admin
         type : String,
-        required: true
+        default : "etudiant"
     },
     statut :{
         // etudiant / stagiaire / salarié.
         type : String,
+        default : "etudiant"
     },
     isVerified :{
         type:Boolean,

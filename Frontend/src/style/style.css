@@ -185,6 +185,9 @@ i:hover {
   width: 100%;
 }
 
+.rdt_TableCell[data-column-id="3"] {
+  text-align: center !important;
+}
 /* login form  */
 a.password:hover {
   color: var(--link-color);

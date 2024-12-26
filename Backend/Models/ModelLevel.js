@@ -11,6 +11,9 @@ const LevelSchema = new Schema({
         trim : true,
         required : true,
         maxlength: 100,
+    },
+    description:{
+        type:String
     }
 }
     ,{
@@ -21,7 +24,6 @@ const LevelSchema = new Schema({
 export const Levels = model("Levels", LevelSchema);
 
 /* 
- 
 function validateLevelData(obj){
     const shema = object({
         title : string().trim().max(100).required()

@@ -4,13 +4,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import axios from "axios";
 import '../style/profile.css';
 import { Navbar, Footer } from "../Components/Components";
-
-//img_prf
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState(null);
   const { id } = useParams();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -19,12 +17,15 @@ const Profile = () => {
 
 
   const [user, setUser] = useState(null);
-
+  const navigate = useNavigate();
   // Vérifie localStorage pour un utilisateur existant
   useEffect(() => {
     const fetchUser = async () => {
    try {
       const storedUser = localStorage.getItem("user");
+      if (!storedUser){
+        navigate("/Auth");
+      }
       setUser(JSON.parse(storedUser)); // Stocke l'utilisateur dans le state
       const response = await axios.get(`http://localhost:8000/api/Users/${id}`);
       const data = response.data.data;
@@ -64,7 +65,6 @@ const Profile = () => {
           user.photo = response.data.photo;
           localStorage.setItem("user", JSON.stringify(user));
           document.getElementById("img_prf").src = response.data.photo.url;
-  
         })
         .catch((err) => {
           console.error(err);
@@ -82,9 +82,9 @@ const Profile = () => {
     e.preventDefault();
     if (user.statut === statut) return toast.info("Choisir un nouveau statut pour le changer");
     try {
-      const updatedProfile = { statut };
+      const updatedStatus = { statut };
       console.log(statut);
-      const response = await axios.put(`http://localhost:8000/api/Users/${id}/status`, updatedProfile);
+      const response = await axios.put(`http://localhost:8000/api/Users/${id}/status`, updatedStatus);
       user.statut = response.data.data;
       localStorage.setItem("user", JSON.stringify(user));
       //to od update localstorage
@@ -153,7 +153,7 @@ const Profile = () => {
                           type="text"
                           id="nom"
                           placeholder="Votre Nom :"
-                          value={firstname || profile?.firstname}
+                          value={firstname || user?.firstname}
                           disabled
                         />
                       </div>
@@ -164,7 +164,7 @@ const Profile = () => {
                           type="text"
                           id="prenom"
                           placeholder="Votre Prénom :"
-                          value={lastname || profile?.lastname}
+                          value={lastname || user?.lastname}
                           disabled
                         />
                       </div>
@@ -175,7 +175,7 @@ const Profile = () => {
                           type="email"
                           id="mail"
                           placeholder="Votre Email :"
-                          value={email || profile?.email}
+                          value={email || user?.email}
                           disabled
                         />
                       </div>

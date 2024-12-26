@@ -4,7 +4,7 @@ import { cloudinaryRemoveImage, cloudinaryUploadImage } from "../utils/cloudinar
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { stat } from "fs/promises";
+import bcrypt from 'bcryptjs';
 
 
 /**-------------------------------------------------------
@@ -15,29 +15,60 @@ import { stat } from "fs/promises";
  ---------------------------------------------------*/
  
 async function createUser(req, res) {
-  try {
+    let user = await Users.findOne({email: req.body.email});
+    if(user){
+       return res.status(400).json({success:false, msg : "Compte déja existe dans la base de donnée"});
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(req.body.password, salt);
+    // Remplacer le mot de passe en clair par le mot de passe hashé
+    req.body.password = hashedPass;
     const result = await Users.create(req.body);
     res.status(201).json({ success: true, msg: 'User created successfully', data: result });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
 }
 
 
 /**-------------------------------------------------------
- * @desc    Get all Students
- * @route   GET /api/user/students
+ * @desc    Get all Students with Pagination
+ * @route   GET /api/user/students?page=1
  * @method  GET
  * @access  Private (Admin only)
  ---------------------------------------------------*/
-async function getStudents(req, res) {
+ async function getStudents(req, res) {
   try {
-    const result = await Users.find({ role: 'Student' }); // Retrieve all users with role 'Student'
-    res.status(200).json({ success: true, msg: 'Students fetched successfully', data: result });
+    // Paramètres de pagination
+    const page = parseInt(req.query.page) || 1; // Page actuelle (par défaut : 1)
+    const limit = 10; // Nombre d'étudiants par page
+    const skip = (page - 1) * limit; // Nombre de documents à ignorer
+
+    // Récupérer les étudiants avec pagination
+    const students = await Users.find({ role: 'etudiant' })
+      .skip(skip) // Ignorer les premiers 'skip' documents
+      .limit(limit) // Limiter à 'limit' documents
+      .exec();
+
+    // Compter le total d'étudiants pour calculer les pages disponibles
+    const totalStudents = await Users.countDocuments({ role: 'etudiant' });
+    const totalPages = Math.ceil(totalStudents / limit);
+
+    // Répondre avec les étudiants paginés et les métadonnées de pagination
+    res.status(200).json({
+      success: true,
+      msg: 'Students fetched successfully',
+      data: students,
+      pagination: {
+        totalStudents,
+        totalPages,
+        currentPage: page,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
+
 
 /**-------------------------------------------------------
  * @desc    Get Students by Level, Year, and Study Field
@@ -96,6 +127,12 @@ async function updateUser(req, res) {
   }
 }
 
+/**-------------------------------------------------------
+ * @desc    Update a User by ID
+ * @route   PUT /api/user/:id/status
+ * @method  PUT
+ * @access  Private (Admin or User)
+ ---------------------------------------------------*/
 const updateUserStatus = async (req, res) => {
   try {
     const { statut } = req.body; // Extraire le statut depuis le corps de la requête

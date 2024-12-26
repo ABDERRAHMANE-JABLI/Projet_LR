@@ -3,6 +3,8 @@ import express from 'express';
 const router = express.Router();
 import userController from '../Controllers/ControllerUser.js';
 import photoUpload from "../Middlewares/uploadPhoto.js";
+
+
 // Create a new user (Admin only)
 router.post('/', userController.createUser);
 

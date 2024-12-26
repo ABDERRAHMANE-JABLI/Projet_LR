@@ -1,11 +1,8 @@
 import './style/style.css';
 import './style/vendor.css';
 import { BrowserRouter as Router, Routes, Route, Navigate  } from "react-router-dom";
-import Home from "./pages/Home"
-import Search from './pages/Search';
-import LoginSignin from './pages/LogInSign'
-import VerifyAccount from './pages/verifyAcount';
-import Profile from './pages/profile';
+
+import {Home, Search, LoginSignin, VerifyAccount, Profile, Students, Levels} from "./Routes"
 
 function App() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -17,6 +14,8 @@ function App() {
         <Route path="/verifyAccount/:userId/:token" element={!user ? <VerifyAccount /> : <Navigate to="/"/>} />
         <Route path="/search/:domaine/:grade/:year" element={user ? <Search /> : <Navigate to="/Auth"/>} />
         <Route path="/profile/:id" element={user ? <Profile /> : <Navigate to="/Auth" />} />
+        <Route path="/Dashboard/Students" element={<Students />} />
+        <Route path="/Dashboard/Levels" element={<Levels />} />
       </Routes>
     </Router>
   );
