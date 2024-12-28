@@ -4,7 +4,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import axios from "axios";
 import '../style/profile.css';
 import { Navbar, Footer } from "../Components/Components";
-import { useNavigate } from "react-router-dom";
+import DiplomaCard from "../Components/Diploma/DiplomaCard";
+import ModalDiploma from "../Components/Diploma/ModalDiploma";
 
 const Profile = () => {
   const [file, setFile] = useState(null);
@@ -14,45 +15,55 @@ const Profile = () => {
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [statut, setstatut] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [diplomas, setDiplomas] = useState([]);
 
 
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-  // Vérifie localStorage pour un utilisateur existant
   useEffect(() => {
     const fetchUser = async () => {
-   try {
-      const storedUser = localStorage.getItem("user");
-      if (!storedUser){
-        navigate("/Auth");
+      try {
+        // Stocke l'utilisateur dans le state
+        const response = await axios.get(`http://localhost:8000/api/Users/${id}`);
+        const data = response.data.data;
+        setUser(data);
+        setFirstname(data.firstname);
+        setLastname(data.lastname);
+        setstatut(data.statut);
+        setEmail(data.email);
+        setLoading(false);
+      } catch (error) {
+        setLoading(true);
+        console.error(error);
       }
-      setUser(JSON.parse(storedUser)); // Stocke l'utilisateur dans le state
-      const response = await axios.get(`http://localhost:8000/api/Users/${id}`);
-      const data = response.data.data;
-      setFirstname(data.firstname);
-      setLastname(data.lastname);
-      setstatut(data.statut);
-      setEmail(data.email);
-      setLoading(false);
-   } catch (error) {
-      setLoading(true);
-      console.error(error);
-   }
-  }
-  fetchUser();
+    }
+    fetchUser();
   }, []);
+
+  useEffect(() => {
+    const getDiplomas = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/StudentLevel/degree/${id}`);
+        const data = response.data.data;
+        setDiplomas(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getDiplomas();
+  }, [id]);
 
 
   const updatePhotoHandler = async (e) => {
     e.preventDefault();
-  
+
     if (!file) {
       return toast.warning("Veuillez insérer une photo.");
     }
-  
+
     const formData = new FormData();
     formData.append("image", file);
-  
+
     // Ajouter Toast Promise
     toast.promise(
       axios.put(`http://localhost:8000/api/Users/${id}/upload_photo`, formData, {
@@ -76,7 +87,7 @@ const Profile = () => {
       }
     );
   };
-  
+
 
   const updateProfileHandler = async (e) => {
     e.preventDefault();
@@ -94,6 +105,25 @@ const Profile = () => {
       toast.error("Erreur lors de la mise à jour du profil.");
     }
   };
+
+
+
+  const handleAddDiploma = (diploma) => {
+    console.log(diploma);
+    setDiplomas([...diplomas, diploma]);
+  };
+
+  const handleDelete = async (idDiploma) => {
+    try {
+      // Supprimer l'élément côté backend
+      await axios.delete(`http://localhost:8000/api/StudentLevel/${idDiploma}`);
+      console.log(`Diplôme supprimé`);
+      setDiplomas(diplomas.filter((diploma) => diploma.id !== idDiploma));
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+    }
+  };
+
 
   return (
     <>
@@ -146,7 +176,7 @@ const Profile = () => {
                 <div className="card-body">
                   <form onSubmit={updateProfileHandler}>
                     <div className="row">
-                      <div className="col-sm-6 mb-3">
+                      <div className="mb-3">
                         <label className="form-label" htmlFor="nom"><strong>Nom</strong></label>
                         <input
                           className="form-control input_form"
@@ -157,7 +187,7 @@ const Profile = () => {
                           disabled
                         />
                       </div>
-                      <div className="col-sm-6 mb-3">
+                      <div className="mb-3">
                         <label className="form-label" htmlFor="prenom"><strong>Prénom</strong></label>
                         <input
                           className="form-control input_form"
@@ -193,12 +223,35 @@ const Profile = () => {
                           <option value="Stagiaire">Stagiaire</option>
                         </select>
                       </div>
+                      <div className="mb-3">
+                        <button className="btn btn-outline-light btn-sm" type="submit">&nbsp;Modifier Mon Statut</button>
+                      </div>
+                    </div>
 
-                    </div>
-                    <div className="mb-3">
-                      <button className="btn btn-outline-light btn-sm" type="submit">&nbsp;Modifier le Statut</button>
-                    </div>
                   </form>
+                  <div className="mb-3">
+                    <label className="form-label" htmlFor="selectOption"><strong>Mes diplomes</strong></label>
+                    <div className="div_diplome">
+                      {diplomas.length > 0 ? (
+                        diplomas.map((diploma, index) => (
+                          <DiplomaCard
+                            key={index}
+                            idDiploma = {diploma.id}
+                            title={diploma.level}
+                            field={diploma.field}
+                            year={diploma.year}
+                            onDelete={handleDelete}
+                          />
+                        ))
+                      ) : (
+                        <p>Aucun diplôme trouvé pour cet utilisateur.</p>
+                      )}
+                    </div>
+                    <div className="mt-3">
+                      <ModalDiploma isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAddDiploma={handleAddDiploma} idUser={id} />
+                      <button className="btn btn-outline-light btn-sm" type="button" onClick={() => setIsModalOpen(true)}>&nbsp;Ajouter Un Diplome</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
