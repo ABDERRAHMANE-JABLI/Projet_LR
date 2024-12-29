@@ -100,22 +100,7 @@ const Students = () => {
     },
     {
       name: 'Actions',
-      cell: (row) => (
-        <button
-          className='btn btn-outline-danger'
-          title='Retirer cet étudiant'
-          onClick={() => {
-            swal({
-              title: 'Vous êtes sûr ?',
-              text: "Vous voulez retirer cet étudiant(e)",
-              icon: 'warning',
-              buttons: true
-            }).then((ok) => { if (ok) { deleteStudent(row._id) } });
-          }}
-        >
-          <i className='bi bi-trash'></i>
-        </button>
-      )
+      cell: (row) => (<div><button className='btn btn-danger'title='Retirer cet étudiant'onClick={() => {swal({title: 'Vous êtes sûr ?',text: "Vous voulez retirer cet étudiant(e)",icon: 'warning',buttons: true}).then((ok) => { if (ok) { deleteStudent(row._id) } });}}><i className='bi bi-trash'></i></button> <a className="btn btn-primary" href={`/profile/${row._id}`}><i className="bi bi-eye"></i></a></div>)
     }
   ];
 

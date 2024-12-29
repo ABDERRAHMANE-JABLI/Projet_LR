@@ -9,7 +9,7 @@ import photoUpload from "../Middlewares/uploadPhoto.js";
 router.post('/', userController.createUser);
 
 // Get students by level, year, studyField
-router.get('/students/:level/:year/:studyField', userController.getStudentsByCriteria);
+router.get('/alumnis/:studyField', userController.getStudentsByCriteria);
 
 // Get all students
 router.get('/students', userController.getStudents);

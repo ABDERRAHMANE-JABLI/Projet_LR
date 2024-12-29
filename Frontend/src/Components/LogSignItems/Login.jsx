@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useState } from "react";
 import {toast} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
+import BASE_URL from '../../config.js';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ const Login = () => {
 
     try {
       // Appel API pour se connecter
-      const response = await axios.post("http://127.0.0.1:8000/api/auth/login", {
+      const response = await axios.post(`${BASE_URL}/auth/login`, {
         email: email,
         password: password,
       });

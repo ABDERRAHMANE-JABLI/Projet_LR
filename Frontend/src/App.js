@@ -12,7 +12,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Auth" element={!user ? <LoginSignin /> : <Navigate to="/" />} />
         <Route path="/verifyAccount/:userId/:token" element={!user ? <VerifyAccount /> : <Navigate to="/"/>} />
-        <Route path="/search/:domaine/:grade/:year" element={user ? <Search /> : <Navigate to="/Auth"/>} />
+        <Route
+          path="/search/:domaine/:grade?/:year?"
+          element={user ? <Search /> : <Navigate to="/Auth" />}
+        />
         <Route path="/profile/:id" element={user ? <Profile /> : <Navigate to="/Auth" />} />
         <Route path="/Dashboard/Students" element={<Students />} />
         <Route path="/Dashboard/Levels" element={<Levels />} />

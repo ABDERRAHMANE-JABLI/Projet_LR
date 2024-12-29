@@ -31,8 +31,7 @@
     font-size: 14px;
   }
   
-  select,
-  input {
+  .select-modal{
     width: 100%;
     padding: 8px;
     font-size: 14px;

@@ -1,63 +1,91 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar, Footer, SectionInfos } from "../Components/Components";
 import { useParams } from 'react-router-dom';
-
-import team1 from "../images/team1.jpg"
-import team2 from "../images/team5.jpg"
-import team4 from "../images/team4.jpg"
-import team3 from "../images/team3.jpg"
-import team5 from "../images/team6.jpg"
-
 import CardStudent from '../Components/Student/CardStudent';
-
-const students = [
-    {
-        id: 1,
-        photo: team1,
-        fullname: "Abdell JABLI",
-        linkedin: "https://linkedin.com/abdell-jabli"
-    },
-    {
-        id: 2,
-        photo: team4,
-        fullname: "Sara Lozachmeur",
-        linkedin: "https://linkedin.com/abdell-jabli"
-    },
-    {
-        id: 3,
-        photo: team2,
-        fullname: "Samiya Bernard",
-        linkedin: "https://linkedin.com/abdell-jabli"
-    },
-    {
-        id: 4,
-        photo: team3,
-        fullname: "Mahammat Hassan",
-        linkedin: "https://linkedin.com/abdell-jabli"
-    },
-    {
-        id: 5,
-        photo: team5,
-        fullname: "Lora Jamy",
-        linkedin: "https://linkedin.com/abdell-jabli"
-    }
-]
+import BASE_URL from "../config";
+import axios from "axios";
 
 const Search = () => {
+    const { domaine, grade, year } = useParams();
     const navigate = useNavigate();
+    const [alumnis, setAlumnis] = useState([]);
+
     useEffect(() => {
         const user = localStorage.getItem("user");
-
         if (!user) {
-            // Rediriger vers la page principale si user n'existe pas
+            // Rediriger vers la page principale si user n'est pas connecté
             navigate("/");
         }
     }, [navigate]);
 
+    const fetchAlumnis = async (field, level, year) => {
+        let chaine = `/Users/alumnis/${field}`;
+        const queryParams = [];
+        // Ajouter les paramètres uniquement s'ils existent
+        if (level) {
+            queryParams.push(`level=${level}`);
+        }
+        if (year) {
+            queryParams.push(`year=${year}`);
+        }
+        // Ajouter les query parameters à la chaîne si nécessaires
+        if (queryParams.length > 0) {
+            chaine += `?${queryParams.join("&")}`;
+        }
+        try {
+            const response = await axios.get(`${BASE_URL}${chaine}`);
+            console.log(response.data);
+            setAlumnis(response.data.data);
+        } catch (error) {
+            console.error("Erreur lors du chargement des données :", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAlumnis(domaine, grade, year);
+    }, [domaine, grade, year]); // Ajout des dépendances si ces valeurs changent
+
+    const [levels, setLevels] = useState([]);
+    const [fields, setFields] = useState([]);
+    const [selectedLevel, setSelectedLevel] = useState(grade);
+    const [selectedField, setSelectedField] = useState(domaine);
+    const [selectedYear, setSelectedYear] = useState(year);
+
+    useEffect(() => {
+        const fetchLevels = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/level`);
+                setLevels(response.data.data);
+            } catch (error) {
+                console.error("Erreur lors du chargement des niveaux :", error);
+            }
+        };
+        fetchLevels();
+    }, []);
+
+    // Charger les domaines d'études
+    useEffect(() => {
+        const fetchFields = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/StudyField`);
+                setFields(response.data.data);
+
+            } catch (error) {
+                console.error("Erreur lors du chargement des domaines :", error);
+            }
+        };
+
+        fetchFields();
+    }, []);
+
+    // la button rechercher : 
+    const handleSearch = () => {
+        fetchAlumnis(selectedField, selectedLevel, selectedYear);
+    }
+
     const currentYear = new Date().getFullYear(); // Année actuelle
-    const lastFiveYears = Array.from({ length: 5 }, (_, i) => currentYear - i); // 5 dernières années
-    const { domaine, grade, year } = useParams();
+    const lastFiveYears = Array.from({ length: 10 }, (_, i) => currentYear - i); // 5 dernières années
 
     return (
         <>
@@ -71,63 +99,27 @@ const Search = () => {
                             <nav className="navbar navbar-expand-lg search-nav">
                                 <div className="container d-flex flex-row justify-content-between">
                                     <div className="search-select">
-                                        <select defaultValue={domaine} className="search-input" aria-label="Purpose">
-                                            <option selected>Domaine</option>
-                                            <option value="1">Informatique</option>
-                                            <option value="2">Économie</option>
-                                            <option value="3">Droit</option>
-                                            <option value="4">Médecine</option>
-                                            <option value="5">Sciences de l'ingénieur</option>
-                                            <option value="6">Lettres</option>
-                                            <option value="7">Langues</option>
-                                            <option value="8">Sciences politiques</option>
-                                            <option value="9">Architecture</option>
-                                            <option value="10">Arts</option>
-                                            <option value="11">Philosophie</option>
-                                            <option value="12">Histoire</option>
-                                            <option value="13">Psychologie</option>
-                                            <option value="14">Sociologie</option>
-                                            <option value="15">Mathématiques</option>
-                                            <option value="16">Physique</option>
-                                            <option value="17">Chimie</option>
-                                            <option value="18">Biologie</option>
-                                            <option value="19">Gestion</option>
-                                            <option value="20">Marketing</option>
-                                            <option value="21">Finance</option>
-                                            <option value="22">Géographie</option>
-                                            <option value="23">Environnement</option>
-                                            <option value="24">Agronomie</option>
-                                            <option value="25">Sciences de l'éducation</option>
-                                            <option value="26">Journalisme</option>
-                                            <option value="27">Communication</option>
-                                            <option value="28">Tourisme</option>
-                                            <option value="29">Sports</option>
-                                            <option value="30">Anthropologie</option>
-                                            <option value="31">Astronomie</option>
-                                            <option value="32">Informatique décisionnelle</option>
-                                            <option value="33">Cyber-sécurité</option>
-                                            <option value="34">Intelligence Artificielle</option>
-                                            <option value="35">Ingénierie logicielle</option>
-                                            <option value="0">Something else here</option>
+                                        <select value={selectedField} className="search-input" aria-label="Purpose" onChange={(e) => setSelectedField(e.target.value)}>
+                                            <option value="">Domaine d'études</option>
+                                            {fields.map((field) => (
+                                                <option key={field._id} value={field._id}>
+                                                    {field.title}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="search-select">
-                                        <select defaultValue={grade} className="search-input" aria-label="Location">
-                                            <option selected>Niveau</option>
-                                            <option value="1">BUT</option>
-                                            <option value="2">Licence</option>
-                                            <option value="3">Master</option>
-                                            <option value="4">Doctorat</option>
-                                            <option value="5">BTS</option>
-                                            <option value="6">DUT</option>
-                                            <option value="7">Ingénieur</option>
-                                            <option value="8">CAP</option>
-                                            <option value="9">Bac</option>
-                                            <option value="10">Post-Doctorat</option>
+                                        <select value={selectedLevel} className="search-input" aria-label="Location" onChange={(e) => setSelectedLevel(e.target.value)}>
+                                            <option value="">Niveau</option>
+                                            {levels.map((level) => (
+                                                <option key={level._id} value={level._id}>
+                                                    {level.title}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="search-select">
-                                        <select defaultValue={year} className="search-input" aria-label="Type">
+                                        <select value={selectedYear} className="search-input" aria-label="Type" onChange={(e) => setSelectedYear(e.target.value)}>
                                             <option selected>Promotions</option>
                                             {
                                                 lastFiveYears.map((year) => (
@@ -138,7 +130,7 @@ const Search = () => {
                                     </div>
 
                                     <div className="search-btn">
-                                        <button type="submit" className="btn btn-primary btn-lg">Recherchez</button>
+                                        <button type="submit" className="btn btn-primary btn-lg" onClick={handleSearch}>Recherchez</button>
                                     </div>
 
                                 </div>
@@ -152,16 +144,26 @@ const Search = () => {
                 <div class="container py-5">
                     <div class="row">
                         <div class="section-header align-center">
-                            <h2 class=" text-capitalize mt-5">Nos Diplômés</h2>
+                            <h2 class=" text-capitalize mt-5">Nos Etudiants</h2>
                         </div>
                     </div>
                     <div class="container mt-4">
-                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                            {students.map((stu) => (
-                                <CardStudent photo={stu.photo} id={stu.id} fullname={stu.fullname} linkedin={stu.linkedin} />
-                            )
-                            )}
-                        </div>
+                        {alumnis.length > 0 ? (
+                            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                                {alumnis.map((student) => (
+                                    <CardStudent
+                                        key={student._id} // Ajout d'une clé unique pour chaque élément
+                                        photo={student.photo}
+                                        id={student._id}
+                                        fullname={`${student.firstname} ${student.lastname}`}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center mt-4">
+                                <h5>Aucun étudiant correspondant à votre recherche.</h5>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

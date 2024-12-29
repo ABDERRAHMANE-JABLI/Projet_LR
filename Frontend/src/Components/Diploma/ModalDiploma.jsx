@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ModalDiploma.css";
 import axios from "axios";
 import Swal from "sweetalert2"
+import BASE_URL from "../../config";
 
 const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
     const [levels, setLevels] = useState([]);
@@ -14,7 +15,7 @@ const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
     useEffect(() => {
         const fetchLevels = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/level");
+                const response = await axios.get(`${BASE_URL}/level`);
                 setLevels(response.data.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des niveaux :", error);
@@ -28,7 +29,7 @@ const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
     useEffect(() => {
         const fetchFields = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/StudyField");
+                const response = await axios.get(`${BASE_URL}/StudyField`);
                 setFields(response.data.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des domaines :", error);
@@ -46,7 +47,7 @@ const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
             // Objet à inserer 
             const dbPayload = { user_id: idUser,level_id: selectedLevel,studyField_id: selectedField,year: selectedYear};
             axios
-                .post("http://localhost:8000/api/StudentLevel/", dbPayload)
+                .post(`${BASE_URL}/StudentLevel`, dbPayload)
                 .then((response) => {
                     // Récupérer l'objet retourné par l'API
                     const diploma = response.data;
@@ -79,10 +80,11 @@ const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
         <div className="modal-overlay">
             <div className="modal-content">
                 <h5 className="text-dark">Ajouter un diplôme</h5>
-                <div className="form-group">
-                    <label htmlFor="level">Niveau d'études :</label>
+                <div className="form-group mt-3">
+                    <label htmlFor="level" className="text-dark">Niveau d'études :</label>
                     <select
                         id="level"
+                        className="select-modal"
                         value={selectedLevel}
                         onChange={(e) => setSelectedLevel(e.target.value)}
                     >
@@ -95,9 +97,10 @@ const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="field">Domaine d'études :</label>
+                    <label htmlFor="field" className="text-dark">Domaine d'études :</label>
                     <select
                         id="field"
+                        className="select-modal"
                         value={selectedField}
                         onChange={(e) => setSelectedField(e.target.value)}
                     >
@@ -110,9 +113,10 @@ const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="year">Année :</label>
+                    <label htmlFor="year" className="text-dark">Année :</label>
                     <select
                         id="year"
+                        className="select-modal"
                         value={selectedYear}
                         onChange={(e) => setSelectedYear(e.target.value)}
                     >
@@ -124,7 +128,7 @@ const ModalDiploma = ({ isOpen, onClose, onAddDiploma, idUser }) => {
                         ))}
                     </select>
                 </div>
-                <div className="modal-actions">
+                <div className="modal-actions mt-3">
                     <button className="btn btn-cancel" onClick={onClose}>
                         Annuler
                     </button>

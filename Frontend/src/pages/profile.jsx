@@ -6,6 +6,7 @@ import '../style/profile.css';
 import { Navbar, Footer } from "../Components/Components";
 import DiplomaCard from "../Components/Diploma/DiplomaCard";
 import ModalDiploma from "../Components/Diploma/ModalDiploma";
+import BASE_URL from "../config";
 
 const Profile = () => {
   const [file, setFile] = useState(null);
@@ -24,14 +25,22 @@ const Profile = () => {
     const fetchUser = async () => {
       try {
         // Stocke l'utilisateur dans le state
-        const response = await axios.get(`http://localhost:8000/api/Users/${id}`);
+        const response = await axios.get(`${BASE_URL}/Users/${id}`);
         const data = response.data.data;
         setUser(data);
         setFirstname(data.firstname);
         setLastname(data.lastname);
         setstatut(data.statut);
         setEmail(data.email);
+        if(data.role !== "admin"){
+          const response = await axios.get(`${BASE_URL}/StudentLevel/degree/${id}`);
+          if(response.data.success){
+            const data = response.data.data;
+            setDiplomas(data);
+          }
+        }
         setLoading(false);
+        
       } catch (error) {
         setLoading(true);
         console.error(error);
@@ -39,19 +48,6 @@ const Profile = () => {
     }
     fetchUser();
   }, []);
-
-  useEffect(() => {
-    const getDiplomas = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/api/StudentLevel/degree/${id}`);
-        const data = response.data.data;
-        setDiplomas(data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getDiplomas();
-  }, [id]);
 
 
   const updatePhotoHandler = async (e) => {
@@ -66,7 +62,7 @@ const Profile = () => {
 
     // Ajouter Toast Promise
     toast.promise(
-      axios.put(`http://localhost:8000/api/Users/${id}/upload_photo`, formData, {
+      axios.put(`${BASE_URL}/Users/${id}/upload_photo`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -95,7 +91,7 @@ const Profile = () => {
     try {
       const updatedStatus = { statut };
       console.log(statut);
-      const response = await axios.put(`http://localhost:8000/api/Users/${id}/status`, updatedStatus);
+      const response = await axios.put(`${BASE_URL}/Users/${id}/status`, updatedStatus);
       user.statut = response.data.data;
       localStorage.setItem("user", JSON.stringify(user));
       //to od update localstorage
@@ -116,7 +112,7 @@ const Profile = () => {
   const handleDelete = async (idDiploma) => {
     try {
       // Supprimer l'élément côté backend
-      await axios.delete(`http://localhost:8000/api/StudentLevel/${idDiploma}`);
+      await axios.delete(`${BASE_URL}/StudentLevel/${idDiploma}`);
       console.log(`Diplôme supprimé`);
       setDiplomas(diplomas.filter((diploma) => diploma.id !== idDiploma));
     } catch (error) {
@@ -171,7 +167,7 @@ const Profile = () => {
             <div className="col mt-3">
               <div className="card shadow mb-3">
                 <div className="card-header py-3">
-                  <p className="h3 m-0 fw-bold">Vos Cordonnées</p>
+                  <p className="h3 m-0 fw-bold">Données du Profile</p>
                 </div>
                 <div className="card-body">
                   <form onSubmit={updateProfileHandler}>
@@ -209,28 +205,32 @@ const Profile = () => {
                           disabled
                         />
                       </div>
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="selectOption"><strong>Statut</strong></label>
-                        <select
-                          className="form-control input_form"
-                          id="selectOption"
-                          value={statut} // Variable d'état pour la valeur sélectionnée
-                          onChange={(e) => setstatut(e.target.value)} // Gestionnaire de changement
-                        >
-                          <option value="Etudiant">Etudiant</option>
-                          <option value="Salarié">Salarié</option>
-                          <option value="Alternant">Alternant</option>
-                          <option value="Stagiaire">Stagiaire</option>
-                        </select>
-                      </div>
-                      <div className="mb-3">
-                        <button className="btn btn-outline-light btn-sm" type="submit">&nbsp;Modifier Mon Statut</button>
-                      </div>
+                        {user.role !== "admin" ? (
+                          <>
+                            <div className="mb-3">
+                          <label className="form-label" htmlFor="selectOption"><strong>Statut</strong></label>
+                          <select
+                            className="form-control input_form"
+                            id="selectOption"
+                            value={statut} // Variable d'état pour la valeur sélectionnée
+                            onChange={(e) => setstatut(e.target.value)} // Gestionnaire de changement
+                          >
+                            <option value="Etudiant">Etudiant</option>
+                            <option value="Salarié">Salarié</option>
+                            <option value="Alternant">Alternant</option>
+                            <option value="Stagiaire">Stagiaire</option>
+                          </select>
+                        </div>
+                        <div className="mb-3">
+                          <button className="btn btn-outline-light btn-sm" type="submit">&nbsp;Modifier Le Statut</button>
+                        </div>
+                          </>
+                        ) : null}
                     </div>
-
                   </form>
-                  <div className="mb-3">
-                    <label className="form-label" htmlFor="selectOption"><strong>Mes diplomes</strong></label>
+                  {user.role !== "admin" ? (
+                    <div className="mb-3">
+                    <label className="form-label" htmlFor="selectOption"><strong>Diplomes Obtenues</strong></label>
                     <div className="div_diplome">
                       {diplomas.length > 0 ? (
                         diplomas.map((diploma, index) => (
@@ -244,14 +244,17 @@ const Profile = () => {
                           />
                         ))
                       ) : (
-                        <p>Aucun diplôme trouvé pour cet utilisateur.</p>
+                        <p className="text-center">Aucun diplôme trouvé.</p>
                       )}
                     </div>
                     <div className="mt-3">
                       <ModalDiploma isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAddDiploma={handleAddDiploma} idUser={id} />
                       <button className="btn btn-outline-light btn-sm" type="button" onClick={() => setIsModalOpen(true)}>&nbsp;Ajouter Un Diplome</button>
                     </div>
-                  </div>
+                    </div>
+                    ) : 
+                    (<></>)
+                  }
                 </div>
               </div>
             </div>

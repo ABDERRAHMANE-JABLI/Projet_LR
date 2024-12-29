@@ -50,7 +50,7 @@ async function getDiplomasByUserId(req, res) {
       .populate('studyField_id', 'title'); // Charger uniquement le libellé du domaine d'études
 
     if (!diplomas || diplomas.length === 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         success: false,
         msg: 'Aucun diplôme trouvé pour cet utilisateur',
         data : []

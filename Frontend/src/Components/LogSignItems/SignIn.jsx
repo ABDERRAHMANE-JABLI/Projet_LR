@@ -3,6 +3,7 @@ import { useState } from "react"
 import {toast} from 'react-toastify'
 import axios from "axios"
 import Swal from "sweetalert2"
+import BASE_URL from "../../config.js"
 
 const Signin = () => {
 
@@ -27,7 +28,7 @@ const Signin = () => {
   
     try {
       // Appel à l'API
-      const response = await axios.post("http://127.0.0.1:8000/api/auth/registre", {
+      const response = await axios.post(`${BASE_URL}/auth/registre`, {
         firstname,
         lastname,
         email,
