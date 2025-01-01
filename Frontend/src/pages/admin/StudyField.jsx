@@ -78,7 +78,7 @@ const StudyField = () => {
     },
     {
         name:'Actions',
-        cell: (row)=>(<button className='btn btn-outline-danger' title='retirer cet Etudiant' onClick={()=>{swal({ title: 'Vous étes sur?', text: "Vous voulez Retirer Cet Etudiant(e)", icon: 'warning', buttons: true}).then((ok) => { if (ok) { deleteStudyField(row._id)}});}}><i className='bi bi-trash'></i></button>),
+        cell: (row)=>(<button className='btn btn-danger' title='retirer cet Etudiant' onClick={()=>{swal({ title: 'Vous étes sur?', text: "Vous voulez Retirer Cet Etudiant(e)", icon: 'warning', buttons: true}).then((ok) => { if (ok) { deleteStudyField(row._id)}});}}><i className='bi bi-trash'></i></button>),
         center: true,
     }
   ];

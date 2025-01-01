@@ -15,6 +15,7 @@ import bcrypt from 'bcryptjs';
  ---------------------------------------------------*/
  
 async function createUser(req, res) {
+    console.log(req.body.password);
     let user = await Users.findOne({email: req.body.email});
     if(user){
        return res.status(400).json({success:false, msg : "Compte déja existe dans la base de donnée"});
@@ -71,28 +72,182 @@ async function createUser(req, res) {
 
 
 /**-------------------------------------------------------
- * @desc    Get Students by Level, Year, and Study Field
- * @route   GET /api/user/students/:level/:year/:studyField
+ * @desc    Get Students by Study Field, Level, and Year
+ * @route   GET /api/user/students/:studyField?level=:level&year=:year
  * @method  GET
- * @access  Private (Admin only)
+ * @access  Private (student and admin)
  ---------------------------------------------------*/
-async function getStudentsByCriteria(req, res) {
-    try {
-      const { level, year, studyField } = req.params; // Retrieve criteria from the URL
-      const result = await StudentLevels.find({
-        level_id: level,
-        year: year,
-        studyField_id: studyField
-      }).populate('user_id'); // Join with Users collection to get user details
-  
-      const students = result.map(studentLevel => studentLevel.user_id); // Extract user details
-  
-      if (!students || students.length === 0) return res.status(404).json({ success: false, msg: 'No students found' });
-      res.status(200).json({ success: true, msg: 'Students fetched successfully', data: students });
-    } catch (error) {
+ /*
+ async function getStudentsByCriteria(req, res) {
+  try {
+      const { studyField } = req.params; // Retrieve mandatory study field from the URL
+      const { level, year } = req.query; // Retrieve optional level and year from query parameters
+      const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+      const limit = parseInt(req.query.limit) || 8; // Default to 8 items per page if not provided
+      const skip = (page - 1) * limit;
+
+      // Validate that studyField is provided
+      if (!studyField) {
+          return res.status(400).json({ success: false, msg: 'Study field is required' });
+      }
+
+      // Build the query dynamically
+      const query = { studyField_id: studyField };
+      if (level) {
+          query.level_id = level; // Add level to the query if provided
+      }
+      if (year) {
+          query.year = year; // Add year to the query if provided
+      }
+
+      const result = await StudentLevels.find(query)
+          .populate({
+              path: 'user_id',
+              match: { role: "etudiant" }, // Populate user details
+              select: '_id firstname lastname photo.url statut' // Select specific fields
+          })
+          .populate({
+              path: 'level_id', // Populate level details
+              select: 'title' // Select only the title of the level
+          });
+
+      // Process the results to group data by user and avoid duplicates
+      const studentMap = {};
+
+      result.forEach(studentLevel => {
+          const userId = studentLevel.user_id._id.toString();
+          if (!studentMap[userId]) {
+              studentMap[userId] = {
+                  _id: studentLevel.user_id._id,
+                  firstname: studentLevel.user_id.firstname,
+                  lastname: studentLevel.user_id.lastname,
+                  photo: studentLevel.user_id.photo?.url || null,
+                  statut: studentLevel.user_id.statut,
+                  diplomas: []
+              };
+          }
+          // Add the diploma title to the student's diplomas array
+          if (studentLevel.level_id && studentLevel.level_id.title) {
+              studentMap[userId].diplomas.push(studentLevel.level_id.title);
+          }
+      });
+
+      // Convert the map back to an array for the response
+      const students = Object.values(studentMap).slice(skip, skip + limit);
+
+      if (!students || students.length === 0) {
+          return res.status(200).json({ success: false, msg: 'No students found', data: [] });
+      }
+
+      const total = Object.keys(studentMap).length;
+
+      res.status(200).json({
+          success: true,
+          msg: 'Students fetched successfully',
+          data: students,
+          pagination: {
+              total,
+              page,
+              limit,
+              totalPages: Math.ceil(total / limit)
+          }
+      });
+  } catch (error) {
       res.status(500).json({ success: false, error: error.message });
-    }
+  }
 }
+*/
+
+/**-------------------------------------------------------
+ * @desc    Get Students by Study Field, Level, and Year
+ * @route   GET /api/user/students/:studyField?level=:level&year=:year
+ * @method  GET
+ * @access  Private (student and admin)
+ ---------------------------------------------------*/
+ async function getStudentsByCriteria(req, res) {
+  try {
+      const { studyField } = req.params; // Retrieve mandatory study field from the URL
+      const { level, year } = req.query; // Retrieve optional level and year from query parameters
+      const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+      const limit = parseInt(req.query.limit) || 8; // Default to 8 items per page if not provided
+      const skip = (page - 1) * limit;
+
+      // Validate that studyField is provided
+      if (!studyField) {
+          return res.status(400).json({ success: false, msg: 'Study field is required' });
+      }
+
+      // Build the query dynamically
+      const query = { studyField_id: studyField };
+      if (level) {
+          query.level_id = level; // Add level to the query if provided
+      }
+      if (year) {
+          query.year = year; // Add year to the query if provided
+      }
+
+      const result = await StudentLevels.find(query)
+          .populate({
+              path: 'user_id', // Populate user details
+              match: { role: "etudiant" }, // Filter users with role "etudiant"
+              select: '_id firstname lastname email photo.url statut role' // Select specific fields
+          })
+          .populate({
+              path: 'level_id', // Populate level details
+              select: 'title' // Select only the title of the level
+          });
+
+      // Filter out null values for users that don't match the role
+      const filteredResult = result.filter(studentLevel => studentLevel.user_id !== null);
+
+      // Process the results to group data by user and avoid duplicates
+      const studentMap = {};
+
+      filteredResult.forEach(studentLevel => {
+          const userId = studentLevel.user_id._id.toString();
+          if (!studentMap[userId]) {
+              studentMap[userId] = {
+                  _id: studentLevel.user_id._id,
+                  firstname: studentLevel.user_id.firstname,
+                  lastname: studentLevel.user_id.lastname,
+                  email: studentLevel.user_id.email,
+                  photo: studentLevel.user_id.photo?.url || null,
+                  statut: studentLevel.user_id.statut,
+                  diplomas: []
+              };
+          }
+          // Add the diploma title to the student's diplomas array
+          if (studentLevel.level_id && studentLevel.level_id.title) {
+              studentMap[userId].diplomas.push(studentLevel.level_id.title);
+          }
+      });
+
+      // Convert the map back to an array for the response
+      const students = Object.values(studentMap).slice(skip, skip + limit);
+
+      if (!students || students.length === 0) {
+          return res.status(200).json({ success: false, msg: 'No students found', data: [] });
+      }
+
+      const total = Object.keys(studentMap).length;
+
+      res.status(200).json({
+          success: true,
+          data: students,
+          pagination: {
+              total,
+              page,
+              limit,
+              totalPages: Math.ceil(total / limit)
+          }
+      });
+  } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+
+
 
 
 /**-------------------------------------------------------

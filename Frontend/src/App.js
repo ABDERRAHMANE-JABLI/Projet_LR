@@ -2,7 +2,7 @@ import './style/style.css';
 import './style/vendor.css';
 import { BrowserRouter as Router, Routes, Route, Navigate  } from "react-router-dom";
 
-import {Home, Search, LoginSignin, VerifyAccount, Profile, Students, Levels, StudyField} from "./Routes"
+import {Home, Search, LoginSignin, VerifyAccount, Profile,Chat, Students, Levels, StudyField} from "./Routes"
 
 function App() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -12,8 +12,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Auth" element={!user ? <LoginSignin /> : <Navigate to="/" />} />
         <Route path="/verifyAccount/:userId/:token" element={!user ? <VerifyAccount /> : <Navigate to="/"/>} />
-        <Route path="/search/:domaine/:grade/:year" element={user ? <Search /> : <Navigate to="/Auth"/>} />
+        <Route
+          path="/search/:domaine/:grade?/:year?"
+          element={user ? <Search /> : <Navigate to="/Auth" />}
+        />
         <Route path="/profile/:id" element={user ? <Profile /> : <Navigate to="/Auth" />} />
+        <Route path="/Chat/:id" element={<Chat />} />
         <Route path="/Dashboard/Students" element={<Students />} />
         <Route path="/Dashboard/Levels" element={<Levels />} />
         <Route path="/Dashboard/StudyField" element={<StudyField />} />

@@ -4,6 +4,7 @@ import axios from "axios";
 import gif from "../images/email1.gif";
 import "../style/verifyAccount.css";
 import logo from "../images/logo_first.png";
+import BASE_URL from "../config";
 
 const VerifyAccount = () => {
   const { userId, token } = useParams(); // Récupérer userId et token depuis l'URL
@@ -16,7 +17,7 @@ const VerifyAccount = () => {
       try {
         // Appel à l'API pour vérifier l'e-mail
         const response = await axios.get(
-          `http://localhost:8000/api/auth/verifyAccount/${userId}/${token}`
+          `${BASE_URL}/auth/verifyAccount/${userId}/${token}`
         );
 
         if (response.data.success) {

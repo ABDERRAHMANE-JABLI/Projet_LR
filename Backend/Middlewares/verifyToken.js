@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 //verify token middleware: ************************
 function verifyToken(req, res, next){
@@ -19,21 +19,20 @@ function verifyToken(req, res, next){
     }
 }
 
-// verify token and prof middleware : 
-function verifyStudent(req, res, next){
+// verify token and student middleware : 
+function verifyStudentorAdmin(req, res, next){
     verifyToken(req,res,()=>{
-        if(req.user.role == "student"){
+        if(req.user.role == "etudiant" || req.user.role == "admin"){
             next();
         }
         else{
-            return res.status(403).json({message:"Not allowed only professor, access denied"});
+            return res.status(403).json({message:"Not allowed only student, access denied"});
         }
     });
 }
 
 
 // verify token and only user himself  middleware : 
-//seulement le proprietaire du profile peut modifier le profile
 function verifyTokenAndUser(req, res, next){
     verifyToken(req,res,()=>{
         if(req.user.id == req.params.id){
@@ -46,8 +45,8 @@ function verifyTokenAndUser(req, res, next){
 }
 
 
-module.exports = {
+export default {
     verifyToken,
-    verifyStudent,
+    verifyStudentorAdmin,
     verifyTokenAndUser,
 }

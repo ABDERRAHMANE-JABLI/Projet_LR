@@ -75,12 +75,11 @@ const Navbar = () => {
                     Contact
                   </a>
                 </li>
-  
+
                 {user ? (
                   <>
                     {/* Affichage du Dashboard si l'utilisateur est admin ou a un statut différent de étudiant/stagiaire */}
-                    {(user.role === "admin" || 
-                      (user.status !== "étudiant" && user.status !== "stagiaire")) && (
+                    {(user.role === "admin" || user.statut === "salarié") ? (
                       <li className="nav-item dropdown">
                         <a
                           className="nav-link me-md-4 text-center dropdown-toggle"
@@ -92,32 +91,39 @@ const Navbar = () => {
                           Dashboard
                         </a>
                         <ul className="dropdown-menu dropdown-menu-dark">
-                          <li>
-                            <a href="/Dashboard/Students" className="dropdown-item">
-                            <i className="bi bi-people-fill"></i> Etudiants
-                            </a>
-                          </li>
-                          <li>
-                            <a href="/Dashboard/Levels" className="dropdown-item">
-                            <i className="Bi bi-ladder"></i>  Niveaux
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              href="/Dashboard/StudyField"
-                              className="dropdown-item"
-                            >
-                              <i class="bi bi-book"></i> Domaines d'études
-                            </a>
-                          </li>
-                          <li>
-                            <a href="/dashboard/Events" className="dropdown-item">
-                            <i class="bi bi-calendar-event"></i> Evénements
-                            </a>
-                          </li>
+                          {user.role === "admin" && (
+                            <>
+                              <li>
+                                <a href="/Dashboard/Students" className="dropdown-item">
+                                  <i className="bi bi-people-fill"></i> Étudiants
+                                </a>
+                              </li>
+                              <li>
+                                <a href="/Dashboard/Levels" className="dropdown-item">
+                                  <i className="bi bi-ladder"></i> Niveaux
+                                </a>
+                              </li>
+                              <li>
+                                <a href="/Dashboard/StudyField" className="dropdown-item">
+                                  <i className="bi bi-book"></i> Domaines d'études
+                                </a>
+                              </li>
+                            </>
+                          )}
+                          {(user.role === "admin" || user.statut === "salarié") && (
+                            <li>
+                              <a href="/dashboard/Events" className="dropdown-item">
+                                <i className="bi bi-calendar-event"></i> Événements
+                              </a>
+                            </li>
+                          )}
                         </ul>
                       </li>
-                    )}
+                    ) : null}
+
+                    {/* les messages recues : */}
+                    {/* <li> <ul> ...</ul> </li> */}
+
                     {/* Affichage de la photo de profil et des options utilisateur */}
                     <li className="nav-item dropdown">
                       <a
@@ -170,8 +176,5 @@ const Navbar = () => {
       </nav>
     </header>
   );
-  
-  
 };
-
 export default Navbar;
