@@ -121,6 +121,9 @@ const Navbar = () => {
                       </li>
                     ) : null}
 
+                    {/* les messages recues : */}
+                    {/* <li> <ul> ...</ul> </li> */}
+
                     {/* Affichage de la photo de profil et des options utilisateur */}
                     <li className="nav-item dropdown">
                       <a
@@ -173,8 +176,5 @@ const Navbar = () => {
       </nav>
     </header>
   );
-
-
 };
-
 export default Navbar;

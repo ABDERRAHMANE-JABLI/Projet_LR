@@ -69,9 +69,14 @@ const Profile = () => {
       })
         .then((response) => {
           // Mise à jour des informations utilisateur
-          user.photo = response.data.photo;
-          localStorage.setItem("user", JSON.stringify(user));
-          document.getElementById("img_prf").src = response.data.photo.url;
+          const storedUser = localStorage.getItem("user");
+          let admin = JSON.parse(storedUser)
+          // si l'admin c'est lui qui essaie de modifier l'image d'un étudiant passé en parametres, donc on doit pas modifier les infos de l'admin.
+          if(id === admin._id){
+            user.photo = response.data.photo;
+            localStorage.setItem("user", JSON.stringify(user));
+            document.getElementById("img_prf").src = response.data.photo.url;
+          }
         })
         .catch((err) => {
           console.error(err);
@@ -93,12 +98,17 @@ const Profile = () => {
       console.log(statut);
       const response = await axios.put(`${BASE_URL}/Users/${id}/status`, updatedStatus);
       user.statut = response.data.data;
-      localStorage.setItem("user", JSON.stringify(user));
+      const storedUser = localStorage.getItem("user");
+      let admin = JSON.parse(storedUser)
+      // si l'admin c'est lui qui essaie de modifier le statut d'un autre étudiant, donc on doit pas modifier les infos de l'admin.
+      if(id === admin._id){
+        localStorage.setItem("user", JSON.stringify(user));
+      }
       //to od update localstorage
-      toast.success("Votre statut mis à jour avec succès.");
+      toast.success("Statut mis à jour avec succès.");
     } catch (err) {
       console.error(err);
-      toast.error("Erreur lors de la mise à jour du profil.");
+      toast.error("Erreur lors de la mise à jour du Statut.");
     }
   };
 

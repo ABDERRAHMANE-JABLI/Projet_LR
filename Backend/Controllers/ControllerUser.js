@@ -190,7 +190,7 @@ async function createUser(req, res) {
           .populate({
               path: 'user_id', // Populate user details
               match: { role: "etudiant" }, // Filter users with role "etudiant"
-              select: '_id firstname lastname photo.url statut role' // Select specific fields
+              select: '_id firstname lastname email photo.url statut role' // Select specific fields
           })
           .populate({
               path: 'level_id', // Populate level details
@@ -210,6 +210,7 @@ async function createUser(req, res) {
                   _id: studentLevel.user_id._id,
                   firstname: studentLevel.user_id.firstname,
                   lastname: studentLevel.user_id.lastname,
+                  email: studentLevel.user_id.email,
                   photo: studentLevel.user_id.photo?.url || null,
                   statut: studentLevel.user_id.statut,
                   diplomas: []

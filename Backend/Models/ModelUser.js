@@ -24,7 +24,7 @@ const UserSchema = new Schema({
     photo:{
         type: Object,
         default:{
-            url:"https://cdn.pixabay.com/photo/2017/02/25/22/04/user-icon-2098873_1280.png",
+            url:"https://pixabay.com/get/gb59befd955651c9980aa87af902808888738951c98c97fb07e2061d38889f959bd1c58d809ff5cff5bd23ca8cc0d1c47237b6c9d9686c3dd552d3612273e230c9f9c2b5c5657aa25c98c726f2f359d6a_640.png",
             publicId: null,
         }
     },

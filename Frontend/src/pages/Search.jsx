@@ -156,6 +156,7 @@ const Search = () => {
                                         photo={student.photo}
                                         id={student._id}
                                         fullname={`${student.firstname} ${student.lastname}`}
+                                        email ={student.email}
                                     />
                                 ))}
                             </div>

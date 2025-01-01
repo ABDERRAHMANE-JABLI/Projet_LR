@@ -10,8 +10,7 @@ import dotenv from "dotenv";
 import ConnectionDB from './Config/connectionDB.js';
 
 //init server : 
-const app = express();
-
+import {app, server} from "./socket/socket.js"
 //my .env file
 dotenv.config();
 
@@ -27,14 +26,16 @@ import routeLevel from './Routes/RouteLevel.js';
 import routeStudyField from './Routes/RouteStudyField.js'
 import routeStudentLevel from './Routes/RouteStudentLevel.js'
 import routeUser from './Routes/RouteUser.js'
+import routeMessages from './Routes/RouteMessage.js'
 import routeAuthentification from './Routes/RouteAuth.js'
+
 
 app.use("/api/level", routeLevel);
 app.use("/api/StudyField", routeStudyField);
 app.use("/api/Users", routeUser);
 app.use("/api/StudentLevel", routeStudentLevel);
+app.use("/api/messages", routeMessages);
 app.use("/api/auth", routeAuthentification);
-
 
 //------------------------------------------------------------------------------------
 
@@ -42,7 +43,7 @@ app.use("/api/auth", routeAuthentification);
 const port = process.env.PORT || 5000;
 ConnectionDB();
 
-app.listen(port,(error)=>{
+server.listen(port,(error)=>{
     if(error) console.log("error in server");
     console.log(`server start in port ${port}`);
 });
