@@ -180,7 +180,11 @@ i:hover {
   --bs-dropdown-link-active-bg: var(--grey-color);
   min-width: max-content;
 }
-
+.badge {
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 50%;
+}
 .nav-link.active:after {
   width: 100%;
 }

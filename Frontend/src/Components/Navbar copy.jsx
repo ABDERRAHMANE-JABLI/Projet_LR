@@ -5,7 +5,7 @@ import logo from "../images/logo_app.png";
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
-  const { unreadMessages } = useContext(SocketContext); // Récupérer les messages non lus du contexte
+  const {unreadMessages} = useContext(SocketContext); // Récupérer les messages non lus du contexte
   const navigate = useNavigate();
 
   // Vérifie si un utilisateur est connecté via le localStorage
@@ -77,51 +77,10 @@ const Navbar = () => {
                   </a>
                 </li>
 
+                
+
                 {user ? (
                   <>
-                    {/* Affichage du Dashboard */}
-                    {(user.role === "admin" || user.statut === "salarié") && (
-                      <li className="nav-item dropdown">
-                        <a
-                          className="nav-link me-md-4 text-center dropdown-toggle"
-                          data-bs-toggle="dropdown"
-                          href="#p"
-                          role="button"
-                          aria-expanded="false"
-                        >
-                          Dashboard
-                        </a>
-                        <ul className="dropdown-menu dropdown-menu-dark">
-                          {user.role === "admin" && (
-                            <>
-                              <li>
-                                <a href="/Dashboard/Students" className="dropdown-item">
-                                  <i className="bi bi-people-fill"></i> Étudiants
-                                </a>
-                              </li>
-                              <li>
-                                <a href="/Dashboard/Levels" className="dropdown-item">
-                                  <i className="bi bi-ladder"></i> Niveaux
-                                </a>
-                              </li>
-                              <li>
-                                <a href="/Dashboard/StudyField" className="dropdown-item">
-                                  <i className="bi bi-book"></i> Domaines d'études
-                                </a>
-                              </li>
-                            </>
-                          )}
-                          {(user.role === "admin" || user.statut === "salarié") && (
-                            <li>
-                              <a href="/dashboard/Events" className="dropdown-item">
-                                <i className="bi bi-calendar-event"></i> Événements
-                              </a>
-                            </li>
-                          )}
-                        </ul>
-                      </li>
-                    )}
-
                     {/* Messages avec Badge */}
                     <li className="nav-item dropdown position-relative">
                       <a
@@ -199,5 +158,4 @@ const Navbar = () => {
     </header>
   );
 };
-
 export default Navbar;

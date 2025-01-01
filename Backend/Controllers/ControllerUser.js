@@ -189,7 +189,7 @@ async function createUser(req, res) {
       const result = await StudentLevels.find(query)
           .populate({
               path: 'user_id', // Populate user details
-              match: { role: "etudiant" }, // Filter users with role "etudiant"
+              match: { role: "etudiant", _id: { $ne: req.user.id } }, // Filter users with role "etudiant"
               select: '_id firstname lastname email photo.url statut role' // Select specific fields
           })
           .populate({

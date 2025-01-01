@@ -37,6 +37,7 @@ io.on("connection", (socket) => {
         const receiverSocketId = getReceiverSocketId(receiverId);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("receiveMessage", { senderId, message });
+            io.to(receiverSocketId).emit("newMessageReceived", { senderId, message });
         }
     });
 

@@ -34,7 +34,9 @@ const Search = () => {
             chaine += `?${queryParams.join("&")}`;
         }
         try {
-            const response = await axios.get(`${BASE_URL}${chaine}`);
+            const response = await axios.get(`${BASE_URL}${chaine}`,{ 
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
             console.log(response.data);
             setAlumnis(response.data.data);
         } catch (error) {

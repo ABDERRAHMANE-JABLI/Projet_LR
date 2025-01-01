@@ -15,9 +15,7 @@ const Home = () => {
 
     const [levels, setLevels] = useState([]);
     const [fields, setFields] = useState([]);
-    const [selectedLevel, setSelectedLevel] = useState("");
-    const [selectedField, setSelectedField] = useState("");
-    const [selectedYear, setSelectedYear] = useState("");
+
 
     // Charger les niveaux d'études
 
