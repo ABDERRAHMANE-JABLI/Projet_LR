@@ -19,7 +19,9 @@ const Signin = () => {
   
     if (firstname.trim() === "") return toast.error("Le Nom est Obligatoire");
     if (lastname.trim() === "") return toast.error("Le Prénom est Obligatoire");
-    if (email.trim() === "") return toast.error("L'Email est Obligatoire");
+    if (!email.endsWith("@etudiant.univ-lr.fr")) {
+      return toast.error("Tu dois s'inscrire avec ton email universitaire");
+    }
     if (password.trim() === "") return toast.error("Le Mot de Passe est Obligatoire");
     if (password.trim() !== password_repeat.trim()) {
       setError(true);
@@ -28,21 +30,14 @@ const Signin = () => {
   
     try {
       // Appel à l'API
-      const response = await axios.post(`${BASE_URL}/auth/registre`, {
-        firstname,
-        lastname,
-        email,
-        password,
-      },
+      const response = await axios.post(`${BASE_URL}/auth/registre`, {firstname,lastname,email,password},
       {
         headers: {
           "Content-Type": "application/json", // Préciser que les données sont au format JSON
         },
       });
-  
       // Récupération du message de l'API
       const { message } = response.data;
-  
       // Afficher le message dans SweetAlert2
       Swal.fire({
         title: "Succès !",
@@ -50,35 +45,23 @@ const Signin = () => {
         icon: "success",
         confirmButtonText: "OK",
       });
-  
       // Réinitialiser le formulaire après succès
       setFirstname("");
       setlastname("");
       setEmailregistre("");
       setPassregistre("");
+      setpassword_repeat("");
   
     } catch (error) {
         console.log(error)
       if (error.response) {
-        Swal.fire({
-          title: "Erreur",
-          text: error.response.data.message || "Une erreur s'est produite",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        Swal.fire({ title: "Erreur", text: error.response.data.message || "Une erreur s'est produite",icon: "error", confirmButtonText: "OK",});
       } else {
-        Swal.fire({
-          title: "Erreur",
-          text: "Impossible de se connecter au serveur.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        Swal.fire({title: "Erreur",text: "Impossible de se connecter au serveur.",icon: "error",confirmButtonText: "OK",});
       }
     }
   };
   
-
-
   return (
     <div id="Signin" className="tab-pane fade show" role="tabpanel" aria-labelledby="Signin-tab">
       <div className="row">
@@ -88,7 +71,7 @@ const Signin = () => {
           <div className="col-lg-7">
               <div className="p-5">
                 <div className="text-center">
-                    <h4 className="text-dark mb-4">Vous étes Etudiants à LR-Univ ?</h4>
+                    <h4 className="text-dark mb-4">Vous étes Etudiant à LR-Univ ?</h4>
                 </div>
                     <form className="user" onSubmit={formRegister}>
                         <div className="row">
@@ -107,6 +90,7 @@ const Signin = () => {
                                         placeholder="Votre Prénom : "
                                         onChange={(e) => setlastname(e.target.value)}
                                         value={lastname} 
+                                        required
                                 />
                             </div>
                         </div>
@@ -116,6 +100,7 @@ const Signin = () => {
                                         placeholder="Votre Email : "
                                         onChange={(e) => setEmailregistre(e.target.value)}
                                         value={email}
+                                        required
                                 />
                         </div>
                         
@@ -125,6 +110,7 @@ const Signin = () => {
                                         placeholder="Votre mot de Pass : "
                                         onChange={(e) => setPassregistre(e.target.value)}
                                         value={password} 
+                                        required
                                 />
                         </div>
                         <div className="mb-3">
@@ -138,6 +124,7 @@ const Signin = () => {
                                         }
                                         }
                                         value={password_repeat} 
+                                        required
                                 />
                                 <div className="invalid-feedback"> 
                                         les deux mots de passe ne sont pas identique
@@ -148,11 +135,6 @@ const Signin = () => {
                             <div className="row">
                                 <Button id="btn_inscrire" text="S'inscrire">
                                 </Button>
-                                <div className="col-sm-12 col-md-6 mt-2">
-                                    <button className={`btn d-block btn-user w-100  btn-outline-danger`} onClick={()=>toast.info("cette fonctionalite n'est pas disponible pour le moments")} type="button" >
-                                        &nbsp;Continuer Avec Google
-                                    </button>
-                                </div>
                             </div>
                         </div>
                         <hr/>

@@ -226,7 +226,7 @@ const Profile = () => {
                             onChange={(e) => setstatut(e.target.value)} // Gestionnaire de changement
                           >
                             <option value="Etudiant">Etudiant</option>
-                            <option value="Salarié">Salarié</option>
+                            <option value="salarié">Salarié</option>
                             <option value="Alternant">Alternant</option>
                             <option value="Stagiaire">Stagiaire</option>
                           </select>

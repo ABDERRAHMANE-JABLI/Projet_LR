@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import { Navbar, Footer } from "../../Components/Components";
 import DataTable from 'react-data-table-component'
@@ -130,7 +130,7 @@ const StudyField = () => {
           <div className="container ct-img">
             <p className="h1 text-center">Dashboard</p>
             <div className="d-flex justify-content-between align-items-center mt-3">
-              <h3><i class="bi bi-book"></i> Domaines d'études</h3>
+              <h3><i className="bi bi-book"></i> Domaines d'études</h3>
               <button
                 className="btn btn-primary"
                 onClick={() => setShowModal(true)}

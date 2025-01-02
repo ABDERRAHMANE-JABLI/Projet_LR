@@ -7,6 +7,8 @@ export {default as Chat} from './pages/Chat'
 export {default as Students} from './pages/admin/Students'
 export {default as Levels} from './pages/admin/Levels'
 export {default as StudyField} from './pages/admin/StudyField'
+export {default as ViewAlumni} from './pages/viewAlumni'
+export {default as Page404} from './pages/404'
 
 
 

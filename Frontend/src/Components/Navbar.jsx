@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../Context/SocketContext"; // Contexte Socket.IO
 import logo from "../images/logo_app.png";
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
@@ -62,14 +63,10 @@ const Navbar = () => {
             <div className="offcanvas-body">
               <ul className="navbar-nav align-items-center justify-content-end flex-grow-1">
                 <li className="nav-item">
-                  <a className="nav-link active me-md-4" href="/">
-                    Accueil
-                  </a>
+                  <NavLink to="/" className={({ isActive }) => `nav-link me-md-4 ${isActive ? 'active' : ''}`}>Acceuil</NavLink>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link me-md-4" href="#residence">
-                    Événements
-                  </a>
+                  <NavLink to="/Events" className={({ isActive }) => `nav-link me-md-4 ${isActive ? 'active' : ''}`}>Evenements</NavLink>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link me-md-4" href="#footer">
@@ -95,27 +92,27 @@ const Navbar = () => {
                           {user.role === "admin" && (
                             <>
                               <li>
-                                <a href="/Dashboard/Students" className="dropdown-item">
+                                <NavLink to="/Dashboard/Students" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
                                   <i className="bi bi-people-fill"></i> Étudiants
-                                </a>
+                                </NavLink>
                               </li>
                               <li>
-                                <a href="/Dashboard/Levels" className="dropdown-item">
+                                <NavLink to="/Dashboard/Levels" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
                                   <i className="bi bi-ladder"></i> Niveaux
-                                </a>
+                                </NavLink>
                               </li>
                               <li>
-                                <a href="/Dashboard/StudyField" className="dropdown-item">
+                                <NavLink to="/Dashboard/StudyField" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
                                   <i className="bi bi-book"></i> Domaines d'études
-                                </a>
+                                </NavLink>
                               </li>
                             </>
                           )}
                           {(user.role === "admin" || user.statut === "salarié") && (
                             <li>
-                              <a href="/dashboard/Events" className="dropdown-item">
-                                <i className="bi bi-calendar-event"></i> Événements
-                              </a>
+                                <NavLink to="/Dashboard/Events" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
+                                  <i className="bi bi-calendar-event"></i> Événements
+                                </NavLink>
                             </li>
                           )}
                         </ul>

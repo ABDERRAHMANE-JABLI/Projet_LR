@@ -15,8 +15,13 @@
     border-radius: 50%;
     object-fit: cover;
 }
-
-
+.alumni-image-wrapper {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    text-align: center;
+    display: flex;
+}
 .upload-profile-photo-icon,
 .upload-profile-photo-btn {
     color: rgb(44, 72, 158);
@@ -60,3 +65,7 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
  
+
+.card-footer a i{
+    font-size: 25px;
+}

@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import bcrypt from 'bcryptjs';
+import sendMail from "../utils/sendEmails.js";
 
 
 /**-------------------------------------------------------
@@ -13,19 +14,91 @@ import bcrypt from 'bcryptjs';
  * @method  POST
  * @access  Private (Admin only)
  ---------------------------------------------------*/
- 
+
 async function createUser(req, res) {
-    console.log(req.body.password);
-    let user = await Users.findOne({email: req.body.email});
-    if(user){
-       return res.status(400).json({success:false, msg : "Compte déja existe dans la base de donnée"});
+  console.log(req.body.password);
+  let user = await Users.findOne({ email: req.body.email });
+  if (user) {
+    return res.status(400).json({ success: false, msg: "Compte déja existe dans la base de donnée" });
+  }
+  const motPass = req.body.password;
+  const salt = await bcrypt.genSalt(10);
+  const hashedPass = await bcrypt.hash(req.body.password, salt);
+  // Remplacer le mot de passe en clair par le mot de passe hashé
+  req.body.password = hashedPass;
+  const result = await Users.create(req.body);
+  // to do send email : 
+  const template = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect-Lr</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      color: #333;
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(req.body.password, salt);
-    // Remplacer le mot de passe en clair par le mot de passe hashé
-    req.body.password = hashedPass;
-    const result = await Users.create(req.body);
-    res.status(201).json({ success: true, msg: 'User created successfully', data: result });
+    .email-container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .email-header {
+      text-align: center;
+      padding: 10px 0;
+      border-bottom: 2px solid #2563eb;
+    }
+    .email-header h1 {
+      font-size: 2rem;
+      color: #2563eb;
+      margin: 0;
+    }
+    .email-body {
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .highlight {
+      color: #2563eb;
+      font-weight: bold;
+    }
+    .credentials {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-header">
+      <h1>Connect-Lr</h1>
+    </div>
+    <div class="email-body">
+      <p>Bonjour <span class="highlight">${req.body.firstname}</span>,</p>
+      <p>La scolarité de ton université a créé un compte pour toi afin d'utiliser <strong>Connect Lr</strong>, notre plateforme intuitive pour simplifier votre expérience universitaire.</p>
+      <p>Voici tes identifiants de connexion :</p>
+      <div class="credentials">
+        <p>Email : <span class="highlight">${req.body.email}</span></p>
+        <p>Mot de passe : <span class="highlight">${motPass}</span></p>
+      </div>
+      <p>Nous te recommandons de changer ton mot de passe dès ta première connexion.</p>
+      <p>Bonne utilisation de Connect-Lr !</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+  await sendMail(req.body.email, "Bienvenue sur Connect-LR", template);
+  res.status(201).json({ success: true, msg: 'User created successfully', data: result });
 }
 
 
@@ -35,7 +108,7 @@ async function createUser(req, res) {
  * @method  GET
  * @access  Private (Admin only)
  ---------------------------------------------------*/
- async function getStudents(req, res) {
+async function getStudents(req, res) {
   try {
     // Paramètres de pagination
     const page = parseInt(req.query.page) || 1; // Page actuelle (par défaut : 1)
@@ -77,172 +150,85 @@ async function createUser(req, res) {
  * @method  GET
  * @access  Private (student and admin)
  ---------------------------------------------------*/
- /*
- async function getStudentsByCriteria(req, res) {
+async function getStudentsByCriteria(req, res) {
   try {
-      const { studyField } = req.params; // Retrieve mandatory study field from the URL
-      const { level, year } = req.query; // Retrieve optional level and year from query parameters
-      const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-      const limit = parseInt(req.query.limit) || 8; // Default to 8 items per page if not provided
-      const skip = (page - 1) * limit;
+    const { studyField } = req.params; // Retrieve mandatory study field from the URL
+    const { level, year } = req.query; // Retrieve optional level and year from query parameters
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+    const limit = parseInt(req.query.limit) || 8; // Default to 8 items per page if not provided
+    const skip = (page - 1) * limit;
 
-      // Validate that studyField is provided
-      if (!studyField) {
-          return res.status(400).json({ success: false, msg: 'Study field is required' });
-      }
+    // Validate that studyField is provided
+    if (!studyField) {
+      return res.status(400).json({ success: false, msg: 'Study field is required' });
+    }
 
-      // Build the query dynamically
-      const query = { studyField_id: studyField };
-      if (level) {
-          query.level_id = level; // Add level to the query if provided
-      }
-      if (year) {
-          query.year = year; // Add year to the query if provided
-      }
+    // Build the query dynamically
+    const query = { studyField_id: studyField };
+    if (level) {
+      query.level_id = level; // Add level to the query if provided
+    }
+    if (year) {
+      query.year = year; // Add year to the query if provided
+    }
 
-      const result = await StudentLevels.find(query)
-          .populate({
-              path: 'user_id',
-              match: { role: "etudiant" }, // Populate user details
-              select: '_id firstname lastname photo.url statut' // Select specific fields
-          })
-          .populate({
-              path: 'level_id', // Populate level details
-              select: 'title' // Select only the title of the level
-          });
-
-      // Process the results to group data by user and avoid duplicates
-      const studentMap = {};
-
-      result.forEach(studentLevel => {
-          const userId = studentLevel.user_id._id.toString();
-          if (!studentMap[userId]) {
-              studentMap[userId] = {
-                  _id: studentLevel.user_id._id,
-                  firstname: studentLevel.user_id.firstname,
-                  lastname: studentLevel.user_id.lastname,
-                  photo: studentLevel.user_id.photo?.url || null,
-                  statut: studentLevel.user_id.statut,
-                  diplomas: []
-              };
-          }
-          // Add the diploma title to the student's diplomas array
-          if (studentLevel.level_id && studentLevel.level_id.title) {
-              studentMap[userId].diplomas.push(studentLevel.level_id.title);
-          }
+    const result = await StudentLevels.find(query)
+      .populate({
+        path: 'user_id', // Populate user details
+        match: { role: "etudiant", _id: { $ne: req.user.id } }, // Filter users with role "etudiant"
+        select: '_id firstname lastname email photo.url statut role' // Select specific fields
+      })
+      .populate({
+        path: 'level_id', // Populate level details
+        select: 'title' // Select only the title of the level
       });
 
-      // Convert the map back to an array for the response
-      const students = Object.values(studentMap).slice(skip, skip + limit);
+    // Filter out null values for users that don't match the role
+    const filteredResult = result.filter(studentLevel => studentLevel.user_id !== null);
 
-      if (!students || students.length === 0) {
-          return res.status(200).json({ success: false, msg: 'No students found', data: [] });
+    // Process the results to group data by user and avoid duplicates
+    const studentMap = {};
+
+    filteredResult.forEach(studentLevel => {
+      const userId = studentLevel.user_id._id.toString();
+      if (!studentMap[userId]) {
+        studentMap[userId] = {
+          _id: studentLevel.user_id._id,
+          firstname: studentLevel.user_id.firstname,
+          lastname: studentLevel.user_id.lastname,
+          email: studentLevel.user_id.email,
+          photo: studentLevel.user_id.photo?.url || null,
+          statut: studentLevel.user_id.statut,
+          diplomas: []
+        };
       }
+      // Add the diploma title to the student's diplomas array
+      if (studentLevel.level_id && studentLevel.level_id.title) {
+        studentMap[userId].diplomas.push(studentLevel.level_id.title);
+      }
+    });
 
-      const total = Object.keys(studentMap).length;
+    // Convert the map back to an array for the response
+    const students = Object.values(studentMap).slice(skip, skip + limit);
 
-      res.status(200).json({
-          success: true,
-          msg: 'Students fetched successfully',
-          data: students,
-          pagination: {
-              total,
-              page,
-              limit,
-              totalPages: Math.ceil(total / limit)
-          }
-      });
+    if (!students || students.length === 0) {
+      return res.status(200).json({ success: false, msg: 'No students found', data: [] });
+    }
+
+    const total = Object.keys(studentMap).length;
+
+    res.status(200).json({
+      success: true,
+      data: students,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
   } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
-  }
-}
-*/
-
-/**-------------------------------------------------------
- * @desc    Get Students by Study Field, Level, and Year
- * @route   GET /api/user/students/:studyField?level=:level&year=:year
- * @method  GET
- * @access  Private (student and admin)
- ---------------------------------------------------*/
- async function getStudentsByCriteria(req, res) {
-  try {
-      const { studyField } = req.params; // Retrieve mandatory study field from the URL
-      const { level, year } = req.query; // Retrieve optional level and year from query parameters
-      const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-      const limit = parseInt(req.query.limit) || 8; // Default to 8 items per page if not provided
-      const skip = (page - 1) * limit;
-
-      // Validate that studyField is provided
-      if (!studyField) {
-          return res.status(400).json({ success: false, msg: 'Study field is required' });
-      }
-
-      // Build the query dynamically
-      const query = { studyField_id: studyField };
-      if (level) {
-          query.level_id = level; // Add level to the query if provided
-      }
-      if (year) {
-          query.year = year; // Add year to the query if provided
-      }
-
-      const result = await StudentLevels.find(query)
-          .populate({
-              path: 'user_id', // Populate user details
-              match: { role: "etudiant", _id: { $ne: req.user.id } }, // Filter users with role "etudiant"
-              select: '_id firstname lastname email photo.url statut role' // Select specific fields
-          })
-          .populate({
-              path: 'level_id', // Populate level details
-              select: 'title' // Select only the title of the level
-          });
-
-      // Filter out null values for users that don't match the role
-      const filteredResult = result.filter(studentLevel => studentLevel.user_id !== null);
-
-      // Process the results to group data by user and avoid duplicates
-      const studentMap = {};
-
-      filteredResult.forEach(studentLevel => {
-          const userId = studentLevel.user_id._id.toString();
-          if (!studentMap[userId]) {
-              studentMap[userId] = {
-                  _id: studentLevel.user_id._id,
-                  firstname: studentLevel.user_id.firstname,
-                  lastname: studentLevel.user_id.lastname,
-                  email: studentLevel.user_id.email,
-                  photo: studentLevel.user_id.photo?.url || null,
-                  statut: studentLevel.user_id.statut,
-                  diplomas: []
-              };
-          }
-          // Add the diploma title to the student's diplomas array
-          if (studentLevel.level_id && studentLevel.level_id.title) {
-              studentMap[userId].diplomas.push(studentLevel.level_id.title);
-          }
-      });
-
-      // Convert the map back to an array for the response
-      const students = Object.values(studentMap).slice(skip, skip + limit);
-
-      if (!students || students.length === 0) {
-          return res.status(200).json({ success: false, msg: 'No students found', data: [] });
-      }
-
-      const total = Object.keys(studentMap).length;
-
-      res.status(200).json({
-          success: true,
-          data: students,
-          pagination: {
-              total,
-              page,
-              limit,
-              totalPages: Math.ceil(total / limit)
-          }
-      });
-  } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 }
 
@@ -291,7 +277,7 @@ async function updateUser(req, res) {
 const updateUserStatus = async (req, res) => {
   try {
     const { statut } = req.body; // Extraire le statut depuis le corps de la requête
-    
+
     // Vérification que le champ `status` est fourni
     if (typeof statut === "undefined") {
       return res.status(400).json({ success: false, msg: "Status is required" });
@@ -345,40 +331,40 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function userUploadPhoto(req, res) {
-    if (!req.file) {
-        return res.status(400).json({ message: "No file provided" });
+  if (!req.file) {
+    return res.status(400).json({ message: "No file provided" });
+  }
+
+  // Obtenir le chemin de l'image :
+  const imgPath = path.join(__dirname, `../images/${req.file.filename}`);
+
+  try {
+    // Upload image to Cloudinary :
+    const result = await cloudinaryUploadImage(imgPath);
+
+    // Obtenir l'utilisateur qui souhaite modifier sa photo :
+    const user = await Users.findById(req.params.id);
+    if (user.photo.publicId !== null) {
+      await cloudinaryRemoveImage(user.photo.publicId);
     }
 
-    // Obtenir le chemin de l'image :
-    const imgPath = path.join(__dirname, `../images/${req.file.filename}`);
+    // Mettre à jour la photo de l'utilisateur
+    user.photo = { url: result.secure_url, publicId: result.public_id };
+    await user.save();
 
-    try {
-        // Upload image to Cloudinary :
-        const result = await cloudinaryUploadImage(imgPath);
-
-        // Obtenir l'utilisateur qui souhaite modifier sa photo :
-        const user = await Users.findById(req.params.id);
-        if (user.photo.publicId !== null) {
-            await cloudinaryRemoveImage(user.photo.publicId);
-        }
-
-        // Mettre à jour la photo de l'utilisateur
-        user.photo = { url: result.secure_url, publicId: result.public_id };
-        await user.save();
-
-        res.status(200).json({
-            message: "Profile photo uploaded successfully",
-            photo: { url: result.secure_url, publicId: result.public_id },
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "An error occurred", error: error.message });
-    } finally {
-        // Supprimer la photo du dossier local
-        if (fs.existsSync(imgPath)) {
-            fs.unlinkSync(imgPath);
-        }
+    res.status(200).json({
+      message: "Profile photo uploaded successfully",
+      photo: { url: result.secure_url, publicId: result.public_id },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred", error: error.message });
+  } finally {
+    // Supprimer la photo du dossier local
+    if (fs.existsSync(imgPath)) {
+      fs.unlinkSync(imgPath);
     }
+  }
 }
 
 
