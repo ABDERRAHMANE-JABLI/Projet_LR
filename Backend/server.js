@@ -28,7 +28,8 @@ import routeStudentLevel from './Routes/RouteStudentLevel.js'
 import routeUser from './Routes/RouteUser.js'
 import routeMessages from './Routes/RouteMessage.js'
 import routeAuthentification from './Routes/RouteAuth.js'
-
+import routeEvent from './Routes/RouteEvent.js'
+import routeThemes from './Routes/RouteThemes.js'
 
 app.use("/api/level", routeLevel);
 app.use("/api/StudyField", routeStudyField);
@@ -36,7 +37,8 @@ app.use("/api/Users", routeUser);
 app.use("/api/StudentLevel", routeStudentLevel);
 app.use("/api/messages", routeMessages);
 app.use("/api/auth", routeAuthentification);
-
+app.use("/api/Event", routeEvent);
+app.use("/api/Theme", routeThemes);
 //------------------------------------------------------------------------------------
 
 //port server : 
