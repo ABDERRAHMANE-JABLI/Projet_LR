@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./DiplomaCard.css";
 
-const DiplomaCard = ({ title, year, field, idDiploma, onDelete }) => {
+const DiplomaCard = ({ title, year, field, idDiploma, onDelete, View=false }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const handleDelete = () => {
@@ -16,9 +16,12 @@ const DiplomaCard = ({ title, year, field, idDiploma, onDelete }) => {
       <span className="diploma-text">
         {title} – {field} - {year}
       </span>
-      <button className="delete-button" title="supprimer ce diplome" onClick={handleDelete}>
-        <i className="bi bi-trash"></i>
-      </button>
+      {View === false ? (
+        <button className="delete-button" title="supprimer ce diplome" onClick={handleDelete}>
+          <i className="bi bi-trash"></i>
+        </button>
+      ) : <></>
+      }
     </div>
   );
 };

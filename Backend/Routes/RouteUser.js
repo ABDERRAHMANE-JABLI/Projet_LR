@@ -3,13 +3,14 @@ import express from 'express';
 const router = express.Router();
 import userController from '../Controllers/ControllerUser.js';
 import photoUpload from "../Middlewares/uploadPhoto.js";
+import verify from "../Middlewares/verifyToken.js";
 
 
 // Create a new user (Admin only)
 router.post('/', userController.createUser);
 
 // Get students by level, year, studyField
-router.get('/alumnis/:studyField', userController.getStudentsByCriteria);
+router.get('/alumnis/:studyField',verify.verifyStudentorAdmin, userController.getStudentsByCriteria);
 
 // Get all students
 router.get('/students', userController.getStudents);

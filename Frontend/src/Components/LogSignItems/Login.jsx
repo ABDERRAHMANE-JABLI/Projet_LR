@@ -79,8 +79,6 @@ const Login = () => {
                         <div className="row">
                             <Button id="btn_connect" text="Se connecter">
                             </Button>
-                            <Button id="Log_google" text="Continuer Avec Google">
-                            </Button>
                         </div>
                       </div>
                     <hr/>

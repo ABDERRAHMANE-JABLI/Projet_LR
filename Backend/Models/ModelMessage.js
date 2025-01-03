@@ -3,27 +3,31 @@ const { Schema, model } = mongoose;
 
 /***
  * @description Message schema
- */
+*/
 
-const MessageSchema = new Schema({
-    sender_id: {
+const MessageSchema = new Schema(
+    {
+        sender_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
-            required: true
+            required: true,
         },
-    received_id: {
+        received_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
-            required: true
+            required: true,
+        },
+        message: {
+            type: String,
+            required: true,
+        },
+        isRead: {
+            type: Boolean,
+            default: false, // Par défaut, un message est non lu
+        },
     },
-    message : {
-        type : String,
-        required : true
-    }
-
-}
-    ,{
-        timestamps:true, 
+    {
+        timestamps: true, // Ajoute createdAt et updatedAt automatiquement
     }
 );
 

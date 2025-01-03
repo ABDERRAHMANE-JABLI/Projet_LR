@@ -10,6 +10,8 @@ const Search = () => {
     const { domaine, grade, year } = useParams();
     const navigate = useNavigate();
     const [alumnis, setAlumnis] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [TotalPages, setTotalePages] = useState(1);
 
     useEffect(() => {
         const user = localStorage.getItem("user");
@@ -18,6 +20,10 @@ const Search = () => {
             navigate("/");
         }
     }, [navigate]);
+
+    const changePage = (page) => {
+        setCurrentPage(page);
+    };
 
     const fetchAlumnis = async (field, level, year) => {
         let chaine = `/Users/alumnis/${field}`;
@@ -33,10 +39,12 @@ const Search = () => {
         if (queryParams.length > 0) {
             chaine += `?${queryParams.join("&")}`;
         }
-        try {
-            const response = await axios.get(`${BASE_URL}${chaine}`);
-            console.log(response.data);
+        try { // limit c'est par défaut 8 (on récupére juste 8 par 8)
+            const response = await axios.get(`${BASE_URL}${chaine}?page=${currentPage}`,{ 
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
             setAlumnis(response.data.data);
+            setTotalePages(response.data.pagination.totalPages)
         } catch (error) {
             console.error("Erreur lors du chargement des données :", error);
         }
@@ -44,7 +52,7 @@ const Search = () => {
 
     useEffect(() => {
         fetchAlumnis(domaine, grade, year);
-    }, [domaine, grade, year]); // Ajout des dépendances si ces valeurs changent
+    }, [currentPage]); // Ajout des dépendances si ces valeurs changent
 
     const [levels, setLevels] = useState([]);
     const [fields, setFields] = useState([]);
@@ -141,31 +149,48 @@ const Search = () => {
             </section>
 
             <section id="feature">
-                <div class="container py-5">
-                    <div class="row">
-                        <div class="section-header align-center">
-                            <h2 class=" text-capitalize mt-5">Nos Etudiants</h2>
+                <div className="container py-5">
+                    <div className="row">
+                        <div className="section-header align-center">
+                            <h2 className=" text-capitalize mt-5">Nos Etudiants</h2>
                         </div>
                     </div>
-                    <div class="container mt-4">
-                        {alumnis.length > 0 ? (
-                            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                                {alumnis.map((student) => (
-                                    <CardStudent
-                                        key={student._id} // Ajout d'une clé unique pour chaque élément
-                                        photo={student.photo}
-                                        id={student._id}
-                                        fullname={`${student.firstname} ${student.lastname}`}
-                                        email ={student.email}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center mt-4">
-                                <h5>Aucun étudiant correspondant à votre recherche.</h5>
-                            </div>
-                        )}
+                    <div className="container mt-4">
+            {alumnis.length > 0 ? (
+                <div>
+                    <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                        {alumnis.map((student) => (
+                            <CardStudent
+                                key={student._id} // Ajout d'une clé unique pour chaque élément
+                                photo={student.photo}
+                                id={student._id}
+                                fullname={`${student.firstname} ${student.lastname}`}
+                                email={student.email}
+                            />
+                        ))}
                     </div>
+                    {/* Barre de navigation */}
+                    <div className="pagination mt-4">
+                        {Array.from({ length: TotalPages }).map((_, index) => { // Exemple avec 10 pages
+                            const pageIndex = index + 1;
+                            return (
+                                <button
+                                    key={index}
+                                    className={`btn btn-primary mx-1 ${currentPage === pageIndex ? 'current' : ''}`}
+                                    onClick={() => changePage(pageIndex)}
+                                >
+                                    {pageIndex === 1 ? 'Page 1' : pageIndex}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            ) : (
+                <div className="text-center mt-4">
+                    <h5>Aucun étudiant correspondant à votre recherche.</h5>
+                </div>
+            )}
+        </div>
                 </div>
             </section>
             <SectionInfos text="Établir de nouveaux liens" />

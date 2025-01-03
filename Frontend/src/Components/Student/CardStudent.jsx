@@ -14,7 +14,7 @@ const CardStudent = ({photo, id, fullname, email}) => {
                     </p>*/}
                 </div>
                 <div className="card-footer d-flex justify-content-center">
-                    <a href={"/student/"+id} className="me-2"><i className="bi bi-person"></i></a>
+                    <a href={"/alumni/"+id} className="me-2"><i className="bi bi-person"></i></a>
                     <a href={"/chat/"+id} className="me-2"><i className="bi bi-chat"></i></a>
                     <a href={"mailto:"+email} className="me-2"><i className="bi bi-envelope"></i></a>
                 </div>

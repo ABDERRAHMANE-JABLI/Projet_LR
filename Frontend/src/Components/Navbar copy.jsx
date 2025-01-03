@@ -2,11 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../Context/SocketContext"; // Contexte Socket.IO
 import logo from "../images/logo_app.png";
-import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
-  const { unreadMessages } = useContext(SocketContext); // Récupérer les messages non lus du contexte
+  const {unreadMessages} = useContext(SocketContext); // Récupérer les messages non lus du contexte
   const navigate = useNavigate();
 
   // Vérifie si un utilisateur est connecté via le localStorage
@@ -63,10 +62,14 @@ const Navbar = () => {
             <div className="offcanvas-body">
               <ul className="navbar-nav align-items-center justify-content-end flex-grow-1">
                 <li className="nav-item">
-                  <NavLink to="/" className={({ isActive }) => `nav-link me-md-4 ${isActive ? 'active' : ''}`}>Acceuil</NavLink>
+                  <a className="nav-link active me-md-4" href="/">
+                    Accueil
+                  </a>
                 </li>
                 <li className="nav-item">
-                  <NavLink to="/Events" className={({ isActive }) => `nav-link me-md-4 ${isActive ? 'active' : ''}`}>Evenements</NavLink>
+                  <a className="nav-link me-md-4" href="#residence">
+                    Événements
+                  </a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link me-md-4" href="#footer">
@@ -74,51 +77,10 @@ const Navbar = () => {
                   </a>
                 </li>
 
+                
+
                 {user ? (
                   <>
-                    {/* Affichage du Dashboard */}
-                    {(user.role === "admin" || user.statut === "salarié") && (
-                      <li className="nav-item dropdown">
-                        <a
-                          className="nav-link me-md-4 text-center dropdown-toggle"
-                          data-bs-toggle="dropdown"
-                          href="#p"
-                          role="button"
-                          aria-expanded="false"
-                        >
-                          Dashboard
-                        </a>
-                        <ul className="dropdown-menu dropdown-menu-dark">
-                          {user.role === "admin" && (
-                            <>
-                              <li>
-                                <NavLink to="/Dashboard/Students" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
-                                  <i className="bi bi-people-fill"></i> Étudiants
-                                </NavLink>
-                              </li>
-                              <li>
-                                <NavLink to="/Dashboard/Levels" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
-                                  <i className="bi bi-ladder"></i> Niveaux
-                                </NavLink>
-                              </li>
-                              <li>
-                                <NavLink to="/Dashboard/StudyField" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
-                                  <i className="bi bi-book"></i> Domaines d'études
-                                </NavLink>
-                              </li>
-                            </>
-                          )}
-                          {(user.role === "admin" || user.statut === "salarié") && (
-                            <li>
-                                <NavLink to="/Dashboard/Events" className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}>
-                                  <i className="bi bi-calendar-event"></i> Événements
-                                </NavLink>
-                            </li>
-                          )}
-                        </ul>
-                      </li>
-                    )}
-
                     {/* Messages avec Badge */}
                     <li className="nav-item dropdown position-relative">
                       <a
@@ -196,5 +158,4 @@ const Navbar = () => {
     </header>
   );
 };
-
 export default Navbar;

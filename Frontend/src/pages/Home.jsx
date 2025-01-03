@@ -4,6 +4,7 @@ import { Navbar, Partner, Event, TestImoniale, SectionInfos, Footer } from "../C
 import bg from "../images/etudiants.png";
 import BASE_URL from '../config';
 import axios from "axios"
+import Swal from "sweetalert2"
 
 const Home = () => {
   const currentYear = new Date().getFullYear(); // Année actuelle
@@ -15,9 +16,7 @@ const Home = () => {
 
     const [levels, setLevels] = useState([]);
     const [fields, setFields] = useState([]);
-    const [selectedLevel, setSelectedLevel] = useState("");
-    const [selectedField, setSelectedField] = useState("");
-    const [selectedYear, setSelectedYear] = useState("");
+
 
     // Charger les niveaux d'études
 
@@ -55,10 +54,14 @@ const Home = () => {
     e.preventDefault();
     const storedUser = localStorage.getItem("user");
     if (!storedUser) {
-      alert('Veuillez se connecter pour pouvoir utiliser ce service');
+      Swal.fire({
+        text: "Impossible, Vous n'etes pas connecter",
+        icon: "info",
+        confirmButtonText: "OK",
+      });
       return;
     }
-    if (domaine !== "") {
+    if (domaine !== "" && domaine !== "0") {
       let path = `/search/${domaine}`;
       if (grade !== "" && year !== "") {
         path += `/${grade}/${year}`;
@@ -71,7 +74,11 @@ const Home = () => {
       }
       navigate(path); //Redirection dynamique
     } else {
-      alert('Veuillez sélectionner un domaine avant de rechercher.');
+      Swal.fire({
+              text: "Veuillez sélectionner un domaine d'études",
+              icon: "info",
+              confirmButtonText: "OK",
+            });
     }
   };
 
